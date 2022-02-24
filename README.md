@@ -1,1 +1,1 @@
-# pathfinding-visualizer
+# Pathfinding Visualizer with JavaFx (In development)
