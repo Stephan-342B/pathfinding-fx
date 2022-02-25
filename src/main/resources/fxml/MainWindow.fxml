@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXNodesList?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+
+<StackPane fx:id="stackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="870.0" minWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mahefa.controller.MainWindowController">
+   <children>
+      <BorderPane fx:id="borderPane">
+         <top>
+            <HBox alignment="CENTER" prefHeight="70.0" spacing="2.0" styleClass="top-bar">
+               <padding>
+                  <Insets bottom="5.0" top="5.0" />
+               </padding>
+               <children>
+                  <JFXButton buttonType="RAISED" prefHeight="55.0" prefWidth="107.0" styleClass="bt-visualize">
+                     <graphic>
+                        <FontAwesomeIcon glyphName="PLAY" size="4em" />
+                     </graphic>
+                  </JFXButton>
+               </children>
+            </HBox>
+         </top>
+         <center>
+            <Pane fx:id="pane" BorderPane.alignment="TOP_LEFT" />
+         </center>
+      </BorderPane>
+      <JFXNodesList fx:id="floater" alignment="CENTER" rotate="135.0" spacing="5.0" StackPane.alignment="BOTTOM_RIGHT">
+         <StackPane.margin>
+            <Insets bottom="30.0" right="15.0" />
+         </StackPane.margin>
+         <children>
+            <JFXButton buttonType="RAISED" styleClass="bt-param">
+               <graphic>
+                  <FontAwesomeIcon glyphName="SLIDERS" size="2em" />
+               </graphic></JFXButton>
+            <JFXButton buttonType="RAISED" styleClass="bt-param" text="Algorithm" />
+            <JFXButton buttonType="RAISED" styleClass="bt-param" text="Maze Generator" />
+            <JFXButton buttonType="RAISED" styleClass="bt-param" text="Clear" />
+         </children>
+      </JFXNodesList>
+   </children>
+</StackPane>
