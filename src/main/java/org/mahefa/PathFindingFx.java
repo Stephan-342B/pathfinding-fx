@@ -1,8 +1,6 @@
 package org.mahefa;
 
 import javafx.application.Application;
-import javafx.application.ConditionalFeature;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
-public class Main extends Application {
+public class PathFindingFx extends Application {
 
     private ConfigurableApplicationContext springContext;
     private Parent rootNode;
@@ -24,19 +22,13 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        boolean is3DSupported = Platform.isSupported(ConditionalFeature.SCENE3D);
-
-        if(!is3DSupported) {
-            throw new Exception("Sorry, 3D is not supported in JavaFX on this platform.");
-        }
-
         Application.setUserAgentStylesheet(Application.STYLESHEET_CASPIAN);
 
         Scene scene = new Scene(rootNode);
         scene.getStylesheets().add(getClass().getResource("/compiled-css/style.css").toExternalForm());
         scene.setFill(Color.WHITE);
 
-        stage.setTitle("Pathfinding Visualizer");
+        stage.setTitle("PathfindingFx");
         stage.setScene(scene);
         stage.setMinWidth(800);
         stage.setMinHeight(870);
@@ -46,7 +38,7 @@ public class Main extends Application {
     }
 
     public void init() throws Exception {
-        springContext = SpringApplication.run(Main.class);
+        springContext = SpringApplication.run(PathFindingFx.class);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainWindow.fxml"));
         fxmlLoader.setControllerFactory(springContext::getBean);
         rootNode = fxmlLoader.load();

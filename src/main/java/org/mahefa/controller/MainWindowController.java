@@ -7,6 +7,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+import org.mahefa.data.Grid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,6 +19,8 @@ public class MainWindowController {
     @FXML Pane pane;
     @FXML JFXNodesList floater;
 
+    @Value("${square.size}")
+    private int squareSize;
 
     private double oldFloaterPosX;
     private double oldFloaterPosY;
@@ -34,9 +38,17 @@ public class MainWindowController {
             int width = (int) pane.getPrefWidth();
             int height = (int) pane.getPrefHeight() - 70; // remove top-bar height
 
-            makeGrid(width, height);
+//            makeGrid(width, height);
+
+            pane.getChildren().clear();
+
+            new Grid(width, height, squareSize, (i, j) -> {
+                pane.getChildren().add(addCell(i, j));
+                return 0;
+            });
         });
 
+        // Not working yet
         floater.setOnMousePressed(event -> {
             oldFloaterPosX = floater.getLayoutX() - event.getSceneX();
             oldFloaterPosY = floater.getLayoutY() - event.getSceneY();
@@ -53,22 +65,10 @@ public class MainWindowController {
         });
     }
 
-    void makeGrid(int width, int height) { ;
-        final int squareSize = 25;
-        final int gapRow = height % squareSize;
-        final int gapCol = width % squareSize;
-        width -= gapCol;
-        height -= gapRow;
+    private Rectangle addCell(final int x, final int y) {
+        Rectangle rectangle = new Rectangle(x, y, squareSize, squareSize);
+        rectangle.setId("cell");
 
-        pane.getChildren().clear();
-
-        for(int i = gapRow / 2; i < height; i += squareSize) {
-            for(int j = gapCol / 2; j < width; j += squareSize) {
-                Rectangle rectangle = new Rectangle(j, i, squareSize, squareSize);
-                rectangle.setId("cell");
-
-                pane.getChildren().add(rectangle);
-            }
-        }
+        return rectangle;
     }
 }
