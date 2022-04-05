@@ -4,13 +4,15 @@
 @import "grid";
 
 .root * {
-  -color-red: #ae2012;
-  -color-blue: #005f73;
-  -color-yellow: #ee9b00;
+  -color-red: #d00000;
+  -color-pink: #800f2f;
+  -color-blue: #00b4d8;
+  -color-yellow: #ffea00;
   -color-green: #70e000;
   -color-grey: #212529;
   -color-white: #fff;
   -color-black: #000;
+  -unvisited-color: #495057;
   -fx-font-smoothing-type: lcd;
   -fx-font-family: Metropolis, Helvetica, Arial, sans-serif;
   -fx-text-fill: -color-black;

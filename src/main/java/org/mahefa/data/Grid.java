@@ -1,45 +1,62 @@
 package org.mahefa.data;
 
+import org.mahefa.common.enumerator.Flag;
+
 import java.util.function.IntBinaryOperator;
+import java.util.stream.IntStream;
 
 public class Grid {
 
     private Cell[][] cells;
-    private boolean[][] visited;
-
     private int rowLen;
     private int colLen;
 
-    public Grid(int CANVAS_WIDTH, int CANVAS_HEIGHT, int squareSize, IntBinaryOperator func) {
+    public Grid(int CANVAS_WIDTH, int CANVAS_HEIGHT, int squareSize, boolean fullOfWalls, IntBinaryOperator func) {
         final int gapRow = CANVAS_HEIGHT % squareSize;
         final int gapCol = CANVAS_WIDTH % squareSize;
-        CANVAS_WIDTH -= gapCol;
-        CANVAS_HEIGHT -= gapRow;
-
-        this.rowLen = CANVAS_HEIGHT / squareSize;
-        this.colLen = CANVAS_WIDTH / squareSize;
+        this.rowLen = (CANVAS_HEIGHT - gapRow) / squareSize;
+        this.colLen = (CANVAS_WIDTH - gapCol) / squareSize;
 
         this.cells = new Cell[rowLen][colLen];
-        this.visited = new boolean[rowLen][colLen];
 
-        int x = 0;
-        int y = 0;
+        IntStream.iterate(gapRow / 2, i -> i + squareSize).limit(rowLen).forEach(i -> {
+            IntStream.iterate(gapCol / 2, j -> j + squareSize).limit(colLen).forEach(j -> {
+                final Location location = new Location(i / squareSize, j / squareSize);
+                Cell cell = (fullOfWalls)
+                        ? new Cell(location, Flag.WALL)
+                        : new Cell(location, Flag.PATH);
 
-        for(int i = gapRow / 2; i < CANVAS_HEIGHT; i += squareSize) {
-            for(int j = gapCol / 2; j < CANVAS_WIDTH; j += squareSize) {
-
-                this.cells[x][y] = new Cell(new Location(x, y));
+                this.cells[location.getX()][location.getY()] = cell;
                 func.applyAsInt(j, i);
-                y++;
-            }
+            });
+        });
+    }
 
-            x++;
-            y = 0;
-        }
+    public Cell[][] getCells() {
+        return cells;
+    }
+
+    public int getRowLen() {
+        return rowLen;
+    }
+
+    public int getColLen() {
+        return colLen;
+    }
+
+    public Cell[] getNeighbors(Cell currentCell) {
+        return new Cell[4];
+    }
+
+    public Cell getCellAt(Location location) {
+        return getCellAt(location.getX(), location.getY());
+    }
+
+    public Cell getCellAt(int r, int c) {
+        return cells[r][c];
     }
 
     public void clear() {
         this.cells = new Cell[rowLen][colLen];
-        this.visited = new boolean[rowLen][colLen];
     }
 }

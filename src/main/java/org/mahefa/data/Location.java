@@ -1,9 +1,13 @@
 package org.mahefa.data;
 
+import org.mahefa.common.enumerator.Direction;
+
+import java.util.Objects;
+
 public class Location {
 
-    private final int x;
-    private final int y;
+    private int x;
+    private int y;
 
     public Location(int x, int y) {
         this.x = x;
@@ -11,26 +15,28 @@ public class Location {
     }
 
     public int getX() {
-        return x;
+        return this.x;
     }
 
     public int getY() {
-        return y;
+        return this.y;
     }
 
-    public double getLayoutX(int CELL_SIZE) {
-        if(x == 0) {
-            return CELL_SIZE / 2;
-        }
-
-        return (x * CELL_SIZE) + CELL_SIZE / 2;
+    public Location move(Direction direction) {
+        return new Location(this.x + direction.getX(), this.y + direction.getY());
     }
 
-    public double getLayoutY(int CELL_SIZE) {
-        if(y == 0) {
-            return CELL_SIZE / 2;
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Location)) return false;
+        Location location = (Location) o;
+        return getX() == location.getX() &&
+                getY() == location.getY();
+    }
 
-        return (y * CELL_SIZE) + CELL_SIZE / 2;
+    @Override
+    public int hashCode() {
+        return Objects.hash(getX(), getY());
     }
 }

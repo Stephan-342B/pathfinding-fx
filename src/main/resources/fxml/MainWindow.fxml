@@ -35,7 +35,7 @@
             <Insets bottom="30.0" right="15.0" />
          </StackPane.margin>
          <children>
-            <JFXButton buttonType="RAISED" styleClass="bt-param">
+            <JFXButton fx:id="options" buttonType="RAISED" styleClass="bt-param">
                <graphic>
                   <FontAwesomeIcon glyphName="SLIDERS" size="2em" />
                </graphic></JFXButton>

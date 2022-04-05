@@ -1,10 +1,8 @@
 package org.mahefa.common.enumerator;
 
-import com.sun.javafx.geom.Vec2d;
-
 public enum Direction {
 
-    UP(0, -1), RIGHT(1, 0), DOWN(0, 1), LEFT(-1, 0);
+    UP(-1, -0), RIGHT(0, 1), DOWN(1, 0), LEFT(0, -1);
 
     private final int x;
     private final int y;
@@ -24,9 +22,5 @@ public enum Direction {
 
     public static Direction valueFor(Orientation orientation) {
         return valueOf(orientation.name());
-    }
-
-    public Vec2d toValue() {
-        return new Vec2d(x, y);
     }
 }
