@@ -3,8 +3,6 @@ name: Java CI with Maven and JavaFX
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build:
@@ -14,10 +12,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up JDK 17
+    - name: Set up JDK 17 (Oracle)
       uses: actions/setup-java@v2
       with:
         java-version: '17'
+        distribution: 'openjdk'
 
     - name: Install X11 Forwarding Dependencies
       run: sudo apt-get update && sudo apt-get install -y libxext6 libxrender1 libxtst6 libxi6
