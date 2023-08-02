@@ -16,7 +16,7 @@ jobs:
       uses: actions/setup-java@v2
       with:
         java-version: '17'
-        distribution: 'openjdk'
+        distribution: 'temurin'
 
     - name: Install X11 Forwarding Dependencies
       run: sudo apt-get update && sudo apt-get install -y libxext6 libxrender1 libxtst6 libxi6
