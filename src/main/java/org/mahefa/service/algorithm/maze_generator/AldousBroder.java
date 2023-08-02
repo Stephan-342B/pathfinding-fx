@@ -3,7 +3,7 @@ package org.mahefa.service.algorithm.maze_generator;
 import javafx.animation.AnimationTimer;
 import org.mahefa.common.enumerator.Direction;
 import org.mahefa.common.enumerator.Flag;
-import org.mahefa.common.utils.ArrayUtils;
+import org.mahefa.common.utils.CellUtils;
 import org.mahefa.data.Cell;
 import org.mahefa.data.Grid;
 import org.mahefa.data.Location;
@@ -42,19 +42,19 @@ public class AldousBroder extends MazeGenerator {
                 if ((now - lastToggle) >= 1_000_000_000L) {
                     if(currentCell == null) {
                         // Pick random cell as the current cell
-                        currentCell = ArrayUtils.pickRandomlyOdd(grid.getCells());
+                        currentCell = CellUtils.pickRandomlyOdd(grid.getCells());
 
                         // Mark as visited
                         currentOldFlag = currentCell.getFlag();
-                        updateCell(currentCell.getLocation(), Flag.POINTER);
+                        currentCell.setFlag(Flag.POINTER);
                         setVisitedAt(currentCell.getLocation());
                         totalUnvisitedCell--;
                     } else {
                         if(isVisited(currentCell.getLocation())) {
-                            updateCell(currentCell.getLocation(), currentOldFlag);
+                            currentCell.setFlag(currentOldFlag);
 
                             if(neighbour != null) {
-                                updateCell(neighbour.getLocation(), neighbourOldFlag);
+                                neighbour.setFlag(neighbourOldFlag);
                                 currentCell = neighbour;
                                 currentOldFlag = currentCell.getFlag();
                             }
@@ -63,7 +63,7 @@ public class AldousBroder extends MazeGenerator {
                         }
 
                         // Pick a random neighbour
-                        Direction direction = ArrayUtils.pickRandomly();
+                        Direction direction = CellUtils.pickRandomly();
                         Location location = currentCell.getLocation();
                         Location neighbourLocation = null;
 
@@ -98,8 +98,8 @@ public class AldousBroder extends MazeGenerator {
 
                             // Move pointer to the current neighbour
                             neighbourOldFlag = neighbour.getFlag();
-                            updateCell(currentCell.getLocation(), currentOldFlag);
-                            updateCell(neighbourLocation, Flag.POINTER);
+                            currentCell.setFlag(currentOldFlag);
+                            neighbour.setFlag(Flag.POINTER);
 
                             // If the chosen neighbour has not been visited
                             if(!isVisited(neighbourLocation)) {
@@ -118,6 +118,6 @@ public class AldousBroder extends MazeGenerator {
                 }
             }
         };
-        animationTimer.start();
+//        animationTimer.start();
     }
 }

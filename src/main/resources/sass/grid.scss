@@ -1,34 +1,3 @@
-.cell {
-  -fx-fill: -unvisited-color;
-  -fx-stroke: -color-grey;
-  -fx-stroke-width: 2px;
-
-  &.wall {
-    -fx-fill: -color-grey;
-  }
-
-  &.pointer {
-    -fx-fill: -color-red;
-  }
-
-  &.path {
-    -fx-fill: -color-white;
-  }
-}
-
-.default-wall {
-  -fx-fill: -color-grey;
-  -fx-stroke: transparent;
-
-  &.pointer {
-    -fx-fill: -color-red;
-  }
-
-  &.path {
-    -fx-fill: -color-white;
-  }
-
-  &.wall {
-    -fx-fill: -color-grey;
-  }
+.grid {
+  -fx-padding: 5px;
 }

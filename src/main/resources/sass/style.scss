@@ -1,19 +1,61 @@
+@import "navbar";
+@import "menu";
 @import "button";
 @import "label";
-@import "menu";
 @import "grid";
+@import "cell";
+
+@font-face {
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 400;
+  font-stretch: 100%;
+  src: url('../fonts/Lato/Lato-Regular.ttf');
+}
+
+@font-face {
+  font-family: "Lato";
+  font-weight: 700;
+  src: url('../fonts/Lato/Lato-Bold.ttf');
+}
 
 .root * {
-  -color-red: #d00000;
-  -color-pink: #800f2f;
+  -color-red: rgb(185, 15, 15);
   -color-blue: #00b4d8;
-  -color-yellow: #ffea00;
+  -color-yellow: #FFEA00;
   -color-green: #70e000;
   -color-grey: #212529;
-  -color-white: #fff;
+  -color-white: #FFF;
   -color-black: #000;
-  -unvisited-color: #495057;
+
+  -txt-color: #34495E;
+  -submenu-inactive-color: #E1E4E7;
+
+  -default-color: #34495E;
+  -navbar-color: #34495E;
+
+  -wall-color: #0C3547;
+  -pointer-color: rgb(255, 254, 106);
+  -grid-border-color: rgb(175, 216, 248);
+
+  -unvisited-color: #FFF;
+  -visited-color: rgba(0, 190, 218, 0.75);
+  -visited-second-color: rgba(216, 5, 141, 0.75);
+  -shortest-path-color: rgb(255, 254, 106);
+  -path-color: #FFF;
+
+  -btn-play-color: #1ABC9C;
+
+  -hover-menu-color: #1ABC9C;
+  -active-menu-color: #1ABC9C;
+
+  -caret-color: #4B6075;
+
   -fx-font-smoothing-type: lcd;
-  -fx-font-family: Metropolis, Helvetica, Arial, sans-serif;
-  -fx-text-fill: -color-black;
+  -fx-font-family: "Lato", Helvetica, Arial, sans-serif;
+  -fx-text-fill: -txt-color;
+}
+
+.stackPane, .borderPane {
+  -fx-background-color: -color-white;
 }

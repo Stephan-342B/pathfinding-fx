@@ -21,6 +21,9 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
+    <ikonli.version>12.3.1</ikonli.version>
+    <jfoenix.version>9.0.1</jfoenix.version>
+    <animatefx.version>1.2.4</animatefx.version>
   </properties>
 
   <dependencies>
@@ -28,50 +31,82 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-integration</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
-      <version>19-ea+2</version>
+      <version>20.0.2</version>
       <type>pom</type>
     </dependency>
+
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-media</artifactId>
-      <version>19-ea+2</version>
+      <version>20.0.2</version>
       <type>pom</type>
     </dependency>
+
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-graphics</artifactId>
-      <version>19-ea+2</version>
+      <version>20.0.2</version>
       <type>pom</type>
     </dependency>
+
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-fxml</artifactId>
-      <version>19-ea+2</version>
+      <version>20.0.2</version>
       <type>pom</type>
     </dependency>
+
     <dependency>
       <groupId>com.jfoenix</groupId>
       <artifactId>jfoenix</artifactId>
-      <version>9.0.10</version>
+      <version>${jfoenix.version}</version>
     </dependency>
+
     <dependency>
-      <groupId>de.jensd</groupId>
-      <artifactId>fontawesomefx</artifactId>
-      <version>8.2</version>
+      <groupId>org.kordamp.ikonli</groupId>
+      <artifactId>ikonli-core</artifactId>
+      <version>${ikonli.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kordamp.ikonli</groupId>
+      <artifactId>ikonli-javafx</artifactId>
+      <version>${ikonli.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kordamp.ikonli</groupId>
+      <artifactId>ikonli-carbonicons-pack</artifactId>
+      <version>${ikonli.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kordamp.ikonli</groupId>
+      <artifactId>ikonli-subway-pack</artifactId>
+      <version>${ikonli.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.typhon0</groupId>
+      <artifactId>AnimateFX</artifactId>
+      <version>${animatefx.version}</version>
     </dependency>
   </dependencies>
 

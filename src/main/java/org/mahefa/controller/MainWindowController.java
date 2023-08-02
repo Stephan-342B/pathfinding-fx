@@ -1,17 +1,24 @@
 package org.mahefa.controller;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXNodesList;
+import animatefx.animation.ZoomIn;
 import javafx.fxml.FXML;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.Node;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
+import org.mahefa.common.enumerator.Flag;
 import org.mahefa.data.Cell;
 import org.mahefa.data.Grid;
+import org.mahefa.data.Location;
+import org.mahefa.data.builder.Navbar;
+import org.mahefa.data.builder.TileBuilder;
 import org.mahefa.service.algorithm.maze_generator.AldousBroder;
 import org.mahefa.service.algorithm.maze_generator.Randomized;
 import org.mahefa.service.algorithm.maze_generator.RandomizedPrim;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -19,92 +26,120 @@ import org.springframework.stereotype.Component;
 @Component
 public class MainWindowController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainWindowController.class);
+
     @FXML StackPane stackPane;
     @FXML BorderPane borderPane;
-    @FXML Pane pane;
-    @FXML JFXNodesList floater;
-    @FXML JFXButton options;
+    @FXML FlowPane navbarPane;
+    @FXML VBox content;
+    @FXML HBox legend;
+    @FXML HBox description;
+    @FXML HBox gridContainer;
+    @FXML Pane gridPane;
 
     @Value("${square.size}") private int squareSize;
-    @Value("${draw.grid.base.timer}") private int drawGridBaseTimer;
 
     @Autowired Randomized randomized;
     @Autowired AldousBroder aldousBroder;
     @Autowired RandomizedPrim randomizedPrim;
 
     private Grid grid;
+    private Navbar navbar;
 
     @FXML
     private void initialize() {
         // Bind width and height property
         borderPane.prefWidthProperty().bind(stackPane.widthProperty());
         borderPane.prefHeightProperty().bind(stackPane.heightProperty());
-        pane.prefWidthProperty().bind(borderPane.widthProperty());
-        pane.prefHeightProperty().bind(borderPane.heightProperty());
+        gridContainer.prefWidthProperty().bind(content.widthProperty());
+        gridContainer.prefHeightProperty().bind(content.heightProperty().subtract(legend.getHeight()).subtract(description.getHeight()));
+        gridPane.prefWidthProperty().bind(gridContainer.widthProperty());
+        gridPane.prefHeightProperty().bind(gridContainer.heightProperty());
 
-        boolean fullOfWalls = true;
+        navbar = new Navbar.Builder(navbarPane)
+                .setArea(stackPane)
+                .build();
+
+        borderPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            if (navbar.getCurrentActiveMenu() == null)
+                return;
+
+            Node clickedNode = event.getPickResult().getIntersectedNode();
+
+            if (clickedNode != null && !(clickedNode instanceof HBox))
+                clickedNode = clickedNode.getParent();
+
+            // Remove the current active menu if the user clicked elsewhere
+            if (
+                    clickedNode == null ||
+                    clickedNode.getId() == null ||
+                    (!clickedNode.getId().startsWith("menu_") && !clickedNode.getId().equalsIgnoreCase("submenu"))
+            ) {
+                navbar.setMenuToDefault();
+            }
+        });
+
+        borderPane.addEventFilter(DragEvent.DRAG_OVER, event -> {
+            Node targetNode = (Node) event.getTarget();
+            Node sourceNode = (Node) event.getGestureSource();
+            Dragboard dragboard = event.getDragboard();
+
+            if (dragboard.hasString() && sourceNode != null && sourceNode.getId() != null && sourceNode.getId().equals("cell")) {
+                if (targetNode != null && targetNode.getId() != null && !targetNode.getId().equals("cell")) {
+                    final String cssClass = dragboard.getString();
+
+                    Cell sourceCell = (Cell) sourceNode.getUserData();
+                    sourceCell.resetFlag(Flag.valueFor(cssClass));
+
+//                event.consume();
+                }
+            }
+        });
 
         // Update grid accordingly to the size of the container
-        pane.layoutBoundsProperty().addListener((e) -> {
-            int width = (int) pane.getPrefWidth();
-            int height = (int) pane.getPrefHeight() - 70; // remove top-bar height
+        gridPane.layoutBoundsProperty().addListener((e) -> {
+            int width = (int) gridPane.getPrefWidth();
+            int height = (int) gridPane.getPrefHeight();
 
-            pane.getChildren().clear();
+            gridPane.getChildren().clear();
 
-            grid = new Grid(width, height, squareSize, fullOfWalls, (i, j) -> {
-                pane.getChildren().add(addCell(i, j, fullOfWalls));
-                return 0;
-            });
+            // Create a grid
+            grid = new Grid(width, height, squareSize, (currentCell, colLen) -> {
+                final Location currentLocation = currentCell.getLocation();
+                final int currentIndex = (currentLocation.getX() * colLen) + currentLocation.getY();
 
-            addListener();
-        });
+                // Update tile depending on the current flag
+                currentCell.flagProperty().addListener((observableValue, oldFlag, newFlag) -> {
+                    Pane currentSquare = (Pane) gridPane.getChildren().get(currentIndex);
+                    currentSquare.getStyleClass().clear();
+                    currentSquare.getStyleClass().add(newFlag.getCssClassValue());
 
-        options.setOnAction(event -> {
-//            randomized.generate(grid);
-            aldousBroder.generate(grid);
-        });
-    }
+                    // Update start and target cell position
+                    if ((oldFlag.equals(Flag.START) || oldFlag.equals(Flag.TARGET)) && !newFlag.equals(oldFlag)) {
+                        ImageView imageView = (ImageView) currentSquare.getChildren().get(0);
+                        imageView.visibleProperty().setValue(false);
+                    }
 
-    private Rectangle addCell(final int x, final int y, final boolean defaultToWall) {
-        Rectangle rectangle = new Rectangle(x, y, squareSize, squareSize);
-        rectangle.getStyleClass().add("cell");
+                    if (newFlag.equals(Flag.START) || newFlag.equals(Flag.TARGET)) {
+                        if (newFlag.equals(Flag.START)) {
+                            grid.setStartCell(currentCell);
+                        } else if (newFlag.equals(Flag.TARGET)) {
+                            grid.setTargetCell(currentCell);
+                        }
 
-        if(defaultToWall)
-            rectangle.getStyleClass().add("default-wall");
+                        ImageView imageView = (ImageView) currentSquare.getChildren().get(0);
+                        imageView.visibleProperty().setValue(true);
 
-        rectangle.managedProperty().bind(rectangle.cacheProperty());
-
-        return rectangle;
-    }
-
-    private void addListener() {
-        for(int i = 0; i < this.grid.getRowLen(); i++) {
-            for(int j = 0; j < this.grid.getColLen(); j++) {
-                Cell cell = this.grid.getCellAt(i, j);
-                final int currentIndex = (i * this.grid.getColLen()) + j;
-
-                cell.flagProperty().addListener((observableValue, oldFlag, newFlag) -> {
-                    Rectangle rectangle = (Rectangle)pane.getChildren().get(currentIndex);
-
-                    switch(newFlag) {
-                        case PATH:
-                            rectangle.getStyleClass().removeAll("wall","pointer");
-                            rectangle.getStyleClass().add("path");
-                            break;
-                        case POINTER:
-                            rectangle.getStyleClass().removeAll("path","wall");
-                            rectangle.getStyleClass().add("pointer");
-                            break;
-                        case WALL:
-                            rectangle.getStyleClass().removeAll("path","pointer");
-                            rectangle.getStyleClass().add("wall");
-                            break;
-                        case VISITED:
-                            rectangle.getStyleClass().removeAll("pointer");
-                            break;
+                        new ZoomIn(imageView).play();
                     }
                 });
-            }
-        }
+
+                final TileBuilder tileBuilder = new TileBuilder(currentCell.col, currentCell.row)
+                        .setSize(squareSize)
+                        .setUserData(currentCell);
+
+                gridPane.getChildren().add(tileBuilder.build());
+            });
+        });
     }
 }

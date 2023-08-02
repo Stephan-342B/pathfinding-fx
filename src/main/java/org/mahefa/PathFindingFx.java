@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,6 +16,8 @@ public class PathFindingFx extends Application {
 
     private ConfigurableApplicationContext springContext;
     private Parent rootNode;
+
+    public static Stage stage;
 
     public static void main(String[] args) {
         Application.launch(args);
@@ -28,11 +31,15 @@ public class PathFindingFx extends Application {
         scene.getStylesheets().add(getClass().getResource("/compiled-css/style.css").toExternalForm());
         scene.setFill(Color.WHITE);
 
+        scaleWindows(scene);
+
         stage.setTitle("PathfindingFx");
         stage.setScene(scene);
         stage.setMinWidth(800);
         stage.setMinHeight(870);
         stage.setMaximized(false);
+
+        this.stage = stage;
 
         stage.show();
     }
@@ -46,5 +53,12 @@ public class PathFindingFx extends Application {
 
     public void stop() {
         springContext.close();
+    }
+
+    private void scaleWindows(Scene scene) {
+        Scale scale = new Scale(1, 1);
+        scale.setPivotX(0);
+        scale.setPivotY(0);
+        scene.getRoot().getTransforms().setAll(scale);
     }
 }

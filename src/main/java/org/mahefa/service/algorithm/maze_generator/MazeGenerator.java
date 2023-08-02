@@ -12,11 +12,6 @@ public abstract class MazeGenerator {
 
     public abstract void generate(Grid grid);
 
-    public void updateCell(Location location, Flag flag) {
-        Cell cell = grid.getCellAt(location);
-        cell.setFlag(flag);
-    }
-
     public boolean isVisited(Location location) {
         return this.visited[location.getX()][location.getY()];
     }

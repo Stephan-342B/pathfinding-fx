@@ -1,38 +1,26 @@
-.jfx-button, .button {
+.button {
   -fx-cursor: hand;
-  -fx-padding: 5 10 5 10;
-  -fx-focus-traversable: false;
-  -fx-color-label-visible: false;
+  -fx-font-size: 14px;
+  -fx-font-weight: 600;
+  -fx-text-fill: -bs-btn-color;
+  -fx-padding: 8.5px 25px;
+  -fx-border-radius: 20px;
+  -fx-background-radius: 20px;
+  -fx-border-width: 1;
 }
 
-.bt-visualize {
-  -fx-background-color: transparent!important;
-  -fx-border-color: transparent!important;
+.btn-play {
+  -fx-cursor: hand;
+  -fx-background-color: -btn-play-color;
+  -fx-background-radius: 4px;
+  -fx-pref-height: 41px;
+  //-fx-padding: 0px 20px;
+  //-fx-border-insets: 10px 15px;
 
-  &:hover {
-    > .glyph-icon {
-      -fx-fill: #012a4a !important;
-    }
-  }
-
-  > .glyph-icon {
-    -fx-font-family: "FontAwesome";
-    -fx-fill: -color-white!important;
-    -fx-highlight-fill: -color-red!important;
-  }
-}
-
-.bt-param {
-  -fx-opacity: .5;
-  -fx-background-color: -color-white;
-  -fx-border-color: -color-grey;
-  -fx-pref-width: 50px;
-  -fx-pref-height: 50px;
-  -fx-background-radius: 50px;
-  -fx-border-radius: 50px;
-  -fx-border-width: 4px;
-
-  &:hover, &:pressed {
-    -fx-opacity: .85;
+  & Text {
+    -fx-fill: -color-white;
+    -fx-font-size: 15px;
+    -fx-font-weight: normal;
+    //-fx-label-padding: 10px 15p 10px 15px;
   }
 }

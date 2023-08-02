@@ -38,7 +38,7 @@ public abstract class Heap<T> {
             // Swap it with the last element
             Collections.swap(list, count - 1, i);
 
-            // Remove the las element
+            // Remove the last element
             list.remove(list.size() - 1);
 
             // Heapify

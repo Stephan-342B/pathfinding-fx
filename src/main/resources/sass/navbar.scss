@@ -1,0 +1,14 @@
+.navbar {
+  -fx-background-color: -navbar-color;
+  -fx-overflow: hidden;
+
+  > .title {
+    -fx-padding: 14px 21p 14px 21px;
+
+    & Text {
+      -fx-fill: -color-white!important;
+      -fx-font-size: 20px;
+      -fx-font-weight: 700;
+    }
+  }
+}

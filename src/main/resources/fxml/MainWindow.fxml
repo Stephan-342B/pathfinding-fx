@@ -1,48 +1,258 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXNodesList?>
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<StackPane fx:id="stackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="870.0" minWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mahefa.controller.MainWindowController">
+<StackPane fx:id="stackPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="870.0" minWidth="1100.0" pickOnBounds="false" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mahefa.controller.MainWindowController">
    <children>
-      <BorderPane fx:id="borderPane">
-         <top>
-            <HBox alignment="CENTER" prefHeight="70.0" spacing="2.0" styleClass="top-bar">
-               <padding>
-                  <Insets bottom="5.0" top="5.0" />
-               </padding>
-               <children>
-                  <JFXButton buttonType="RAISED" prefHeight="55.0" prefWidth="107.0" styleClass="bt-visualize">
-                     <graphic>
-                        <FontAwesomeIcon glyphName="PLAY" size="4em" />
-                     </graphic>
-                  </JFXButton>
-               </children>
-            </HBox>
-         </top>
+      <BorderPane fx:id="borderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
          <center>
-            <Pane fx:id="pane" BorderPane.alignment="TOP_LEFT" />
+            <VBox fx:id="content" BorderPane.alignment="CENTER">
+               <children>
+                  <FlowPane maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" pickOnBounds="false" styleClass="legends">
+                     <VBox.margin>
+                        <Insets bottom="15.0" top="20.0" />
+                     </VBox.margin>
+                     <children>
+                        <HBox fx:id="legend" alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" styleClass="legend">
+                           <children>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" styleClass="icon">
+                                 <image>
+                                    <Image url="@../icons/triangletwo-right.png" />
+                                 </image>
+                                 <HBox.margin>
+                                    <Insets left="7.56" right="7.56" />
+                                 </HBox.margin>
+                              </ImageView>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Start Node" />
+                           </children>
+                           <padding>
+                              <Insets right="28.0" />
+                           </padding>
+                        </HBox>
+                        <HBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" styleClass="legend">
+                           <children>
+                              <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" styleClass="icon">
+                                 <image>
+                                    <Image url="@../icons/circle.png" />
+                                 </image>
+                                 <HBox.margin>
+                                    <Insets left="7.56" right="7.56" />
+                                 </HBox.margin>
+                              </ImageView>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Target Node" />
+                           </children>
+                           <padding>
+                              <Insets right="28.0" />
+                           </padding>
+                        </HBox>
+                        <HBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" styleClass="legend">
+                           <children>
+                              <FontIcon iconLiteral="subway-rectangle" iconSize="20" styleClass="unvisited">
+                                 <HBox.margin>
+                                    <Insets left="7.56" right="7.56" />
+                                 </HBox.margin></FontIcon>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Unvisited Node" />
+                           </children>
+                           <padding>
+                              <Insets right="28.0" />
+                           </padding>
+                        </HBox>
+                        <HBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" styleClass="legend">
+                           <children>
+                              <FontIcon iconLiteral="subway-stop" iconSize="20" styleClass="visited">
+                                 <HBox.margin>
+                                    <Insets left="7.56" right="7.56" />
+                                 </HBox.margin></FontIcon>
+                              <FontIcon iconLiteral="subway-stop" iconSize="20" layoutX="10.0" layoutY="45.0" styleClass="visitedSecond">
+                                 <HBox.margin>
+                                    <Insets left="7.56" right="7.56" />
+                                 </HBox.margin></FontIcon>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Visited Nodes" />
+                           </children>
+                           <padding>
+                              <Insets right="28.0" />
+                           </padding>
+                        </HBox>
+                        <HBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" styleClass="legend">
+                           <children>
+                              <FontIcon iconLiteral="subway-stop" iconSize="20" styleClass="shortest-path">
+                                 <HBox.margin>
+                                    <Insets left="7.56" right="7.56" />
+                                 </HBox.margin></FontIcon>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Shortest-path Node" />
+                           </children>
+                           <padding>
+                              <Insets right="28.0" />
+                           </padding>
+                        </HBox>
+                        <HBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" styleClass="legend">
+                           <children>
+                              <FontIcon iconLiteral="subway-stop" iconSize="20" styleClass="wall">
+                                 <HBox.margin>
+                                    <Insets left="7.56" right="7.56" />
+                                 </HBox.margin></FontIcon>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Wall Node" />
+                           </children>
+                           <padding>
+                              <Insets right="28.0" />
+                           </padding>
+                        </HBox>
+                     </children>
+                     <padding>
+                        <Insets left="40.0" />
+                     </padding>
+                  </FlowPane>
+                  <HBox fx:id="description" alignment="CENTER" maxHeight="-Infinity" minHeight="30.0" pickOnBounds="false" styleClass="algorithmDescriptor">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="description" text="Pick an algorithm and visualize it!" />
+                     </children>
+                  </HBox>
+                  <HBox fx:id="gridContainer" alignment="CENTER" pickOnBounds="false" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Pane fx:id="gridPane" pickOnBounds="false" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
          </center>
+         <top>
+            <FlowPane fx:id="navbarPane" minHeight="53.0" styleClass="navbar" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox fx:id="navbarTitle" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="53.0" styleClass="title">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Pathfinding Visualizer">
+                           <font>
+                              <Font name="Lato Regular" size="20.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <padding>
+                        <Insets bottom="14.0" left="21.0" right="21.0" top="14.0" />
+                     </padding>
+                     <FlowPane.margin>
+                        <Insets />
+                     </FlowPane.margin>
+                  </HBox>
+                  <HBox fx:id="menu_algorithms" alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="53.0" spacing="2.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithms">
+                           <font>
+                              <Font name="Lato Regular" size="14.0" />
+                           </font>
+                        </Text>
+                        <FontIcon iconLiteral="ci-caret-down" iconSize="25" />
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="21.0" right="21.0" top="15.0" />
+                     </padding>
+                     <styleClass>
+                        <String fx:value="menu" />
+                        <String fx:value="has-submenu" />
+                     </styleClass>
+                  </HBox>
+                  <HBox fx:id="menu_mazes_patterns" alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="53.0" spacing="2.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mazes &amp; Patterns">
+                           <font>
+                              <Font name="Lato Regular" size="14.0" />
+                           </font>
+                        </Text>
+                        <FontIcon iconLiteral="ci-caret-down" iconSize="25" />
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="21.0" right="21.0" top="15.0" />
+                     </padding>
+                     <styleClass>
+                        <String fx:value="menu" />
+                        <String fx:value="has-submenu" />
+                     </styleClass>
+                  </HBox>
+                  <HBox fx:id="navbarBtnPlay" alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="41.0" styleClass="btn-play">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Visualize!">
+                           <font>
+                              <Font name="Lato Regular" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <FlowPane.margin>
+                        <Insets bottom="6.0" left="20.0" right="20.0" top="4.0" />
+                     </FlowPane.margin>
+                     <padding>
+                        <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                     </padding>
+                  </HBox>
+                  <HBox fx:id="menu_clear_board" alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="53.0" styleClass="menu">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Clear Board">
+                           <font>
+                              <Font name="Lato Regular" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="21.0" right="21.0" top="15.0" />
+                     </padding>
+                  </HBox>
+                  <HBox fx:id="menu_clear_walls_weights" alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="53.0" styleClass="menu">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Clear Walls &amp; Weights">
+                           <font>
+                              <Font name="Lato Regular" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="21.0" right="21.0" top="15.0" />
+                     </padding>
+                  </HBox>
+                  <HBox fx:id="menu_clear_path" alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="53.0" styleClass="menu">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Clear Path">
+                           <font>
+                              <Font name="Lato Regular" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="21.0" right="21.0" top="15.0" />
+                     </padding>
+                  </HBox>
+                  <HBox fx:id="menu_speed" alignment="CENTER" layoutX="245.0" layoutY="11.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="53.0" spacing="2.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Speed: Fast">
+                           <font>
+                              <Font name="Lato Regular" size="14.0" />
+                           </font>
+                        </Text>
+                        <FontIcon iconLiteral="ci-caret-down" iconSize="25" />
+                     </children>
+                     <padding>
+                        <Insets bottom="15.0" left="21.0" right="21.0" top="15.0" />
+                     </padding>
+                     <styleClass>
+                        <String fx:value="menu" />
+                        <String fx:value="has-submenu" />
+                     </styleClass>
+                  </HBox>
+               </children>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+            </FlowPane>
+         </top>
       </BorderPane>
-      <JFXNodesList fx:id="floater" alignment="CENTER" rotate="135.0" spacing="5.0" StackPane.alignment="BOTTOM_RIGHT">
-         <StackPane.margin>
-            <Insets bottom="30.0" right="15.0" />
-         </StackPane.margin>
-         <children>
-            <JFXButton fx:id="options" buttonType="RAISED" styleClass="bt-param">
-               <graphic>
-                  <FontAwesomeIcon glyphName="SLIDERS" size="2em" />
-               </graphic></JFXButton>
-            <JFXButton buttonType="RAISED" styleClass="bt-param" text="Algorithm" />
-            <JFXButton buttonType="RAISED" styleClass="bt-param" text="Maze Generator" />
-            <JFXButton buttonType="RAISED" styleClass="bt-param" text="Clear" />
-         </children>
-      </JFXNodesList>
    </children>
 </StackPane>

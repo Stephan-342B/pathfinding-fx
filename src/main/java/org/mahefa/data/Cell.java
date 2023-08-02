@@ -4,31 +4,53 @@ import javafx.beans.property.SimpleObjectProperty;
 import org.mahefa.common.enumerator.Direction;
 import org.mahefa.common.enumerator.Flag;
 
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
-public class Cell extends ComparableNode {
+public class Cell extends Cost {
+
+    public int row;
+    public int col;
 
     private Location location;
-    private Set<Direction> neighbours;
+    private Stack<Flag> oldFlag = new Stack<>();
     private SimpleObjectProperty<Flag> flag;
 
-    // TODO
-    private int f = 0;
-    private int g = 0;      // Cost of the path from the start node to n
-    private int h = 0;      // Heuristic function that estimates the cost of the cheapest path from n to the goal
+    public Cell() {}
 
-    public Cell(Location location, Flag flag) {
+    public Cell(Location location) {
         this.location = location;
-        this.flag = new SimpleObjectProperty<>(flag);
     }
 
-    public Set<Direction> getNeighbours() {
-        return neighbours;
+    public Cell(int row, int col, int squareSize) {
+        this.row = row;
+        this.col = col;
+
+        this.location = new Location(row / squareSize, col / squareSize);
+    }
+
+    public Set<Cell> getNeighbours(Grid grid) {
+        List<Location> locations = Arrays.asList(
+                location.move(Direction.UP), location.move(Direction.LEFT),
+                location.move(Direction.DOWN), location.move(Direction.RIGHT)
+        );
+
+        return locations.stream()
+                .filter(location -> (location.getX() >= 0 && location.getX() < grid.getRowLen()) && (location.getY() >= 0 && location.getY() < grid.getColLen()))
+                .map(location -> grid.getCellAt(location.getX(), location.getY()))
+                .collect(Collectors.toSet());
     }
 
     public Location getLocation() {
         return location;
+    }
+
+    public Stack<Flag> getOldFlag() {
+        return oldFlag;
+    }
+
+    public void setOldFlag(Stack<Flag> oldFlag) {
+        this.oldFlag = oldFlag;
     }
 
     public Flag getFlag() {
@@ -39,32 +61,25 @@ public class Cell extends ComparableNode {
         return flag;
     }
 
+    public void setFlagProperty(SimpleObjectProperty<Flag> flagProperty) {
+        this.flag = flagProperty;
+    }
+
     public void setFlag(Flag flag) {
-        this.flag.set(flag);
+        setFlag(flag, false);
     }
 
-    public int getF() {
-        return f;
+    public void revertFlag() {
+        Flag oldValue = Flag.UNVISITED;
+
+        if (!oldFlag.isEmpty())
+            oldValue = oldFlag.pop();
+
+        setFlag(oldValue, true);
     }
 
-    public void setF(int f) {
-        this.f = f;
-    }
-
-    public int getG() {
-        return g;
-    }
-
-    public void setG(int g) {
-        this.g = g;
-    }
-
-    public int getH() {
-        return h;
-    }
-
-    public void setH(int h) {
-        this.h = h;
+    public void resetFlag(Flag defaultFlag) {
+        setFlag(defaultFlag);
     }
 
     @Override
@@ -77,6 +92,19 @@ public class Cell extends ComparableNode {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getNeighbours(), getLocation(), getFlag(), getF(), getG(), getH());
+        return Objects.hash(getLocation(), getFlag());
+    }
+
+    private void setFlag(Flag value, boolean isRevert) {
+        if (this.flag == null) {
+            this.flag = new SimpleObjectProperty<>(value);
+
+            return;
+        }
+
+        if (!isRevert)
+            this.oldFlag.push(this.flag.get());
+
+        this.flag.setValue(value);
     }
 }

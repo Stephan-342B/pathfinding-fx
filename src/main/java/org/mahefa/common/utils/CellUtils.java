@@ -1,14 +1,11 @@
 package org.mahefa.common.utils;
 
 import org.mahefa.common.enumerator.Direction;
-import org.mahefa.data.Location;
 
 import java.util.*;
 
-public final class ArrayUtils {
+public final class CellUtils {
 
-    private static final int dRow[] = { -1, 0, 1, 0 };
-    private static final int dCol[] = { 0, 1, 0, -1 };
     private static final List<Direction> directions = Arrays.asList(Direction.UP, Direction.DOWN, Direction.RIGHT, Direction.LEFT);
 
     public static <T> T pickRandomly(T[] array) {
@@ -18,9 +15,7 @@ public final class ArrayUtils {
 
     public static <T> T pickRandomly(List<? extends T> list) {
         final int index = new Random().nextInt(list.size());
-        return list.get(
-                (index < list.size()) ? index : index - 1
-        );
+        return list.get((index < list.size()) ? index : index - 1);
     }
 
     public static Direction pickRandomly() {
@@ -70,21 +65,6 @@ public final class ArrayUtils {
         i = (i % 2 == 0) ? i / 2 * 2 + 1 : i;
         j = (j % 2 == 0) ? j / 2 * 2 + 1 : j;
         return array[(i < array.length) ? i : i - 1][(j < array.length) ? j : j - 1];
-    }
-
-    public static Set<Direction> retrieveNeighbours(Location location, int length1, int length2) {
-        Set<Direction> list = new HashSet<>();
-
-        for(Direction direction : directions) {
-            final int adjRow = location.getX() + direction.getX();
-            final int adjCol = location.getY() + direction.getY();
-
-            if(checkBoundaries(adjRow, length1) && checkBoundaries(adjCol, length2)) {
-                list.add(direction);
-            }
-        }
-
-        return list;
     }
 
     private static boolean checkBoundaries(int index, int limit) {

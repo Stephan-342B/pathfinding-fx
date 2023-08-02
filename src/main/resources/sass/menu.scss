@@ -1,3 +1,67 @@
-.top-bar {
-  -fx-background-color: -color-grey;
+.menu {
+  -fx-cursor: hand;
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+  -fx-border-width: 0px;
+  -fx-background-radius: 0px;
+  -fx-padding: 15px 21p;
+
+  > .ikonli-font-icon {
+    -fx-icon-color: -caret-color;
+    -fx-icon-size: 25px;
+  }
+
+  & Text {
+    -fx-fill: -color-white;
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+  }
+
+  &:hover Text,
+  &:hover > .ikonli-font-icon {
+    -fx-fill: -hover-menu-color;
+    -fx-icon-color: -hover-menu-color;
+  }
+
+  &.has-submenu.active  {
+    -fx-background-color: -active-menu-color!important;
+
+    Text {
+      -fx-fill: -color-white!important;
+    }
+  }
+
+  &.active {
+    Text {
+      -fx-fill: -hover-menu-color!important;
+    }
+
+    > .ikonli-font-icon {
+      -fx-icon-color: -color-white!important;
+    }
+  }
+}
+
+#submenu {
+  -fx-background-color: -default-color;
+  -fx-background-radius: 4px;
+  -fx-border-radius: 4px;
+  -fx-padding: 3px 4px 3px 4px;
+
+  & Text {
+    -fx-fill: -submenu-inactive-color;
+    -fx-font-size: 14px;
+    -fx-font-weight: 400;
+  }
+
+  > #container {
+    -fx-cursor: hand;
+
+    &:hover, &:hover Text {
+      -fx-fill: -color-white;
+      -fx-background-color: -hover-menu-color;
+      -fx-background-radius: 4px;
+      -fx-border-radius: 4px;
+    }
+  }
 }

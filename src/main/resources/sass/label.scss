@@ -1,13 +1,51 @@
 Label {
-  -fx-opacity: 100%;
-  -fx-font-size: 12px;
-  -fx-font-style: normal;
+  -fx-font-weight: 700;
 }
 
-.title {
-  -fx-text-fill: #fff!important;
-  -fx-font-size: 22px;
-  -fx-font-weight: bold;
-  -fx-label-padding: 20px;
-  -fx-padding: 5px;
+.algorithmDescriptor {
+  -fx-padding: 15px 25px 15px 25px;
+
+  & Text {
+    -fx-fill: -txt-color;
+    -fx-font-size: 18px;
+  }
 }
+
+.legend {
+  -fx-padding: 0px 28px 0px 0px;
+
+  & Text {
+    -fx-fill: -txt-color;
+    -fx-font-size: 18px;
+  }
+
+  > .icon {
+    -fx-fit-to-width: 25;
+    -fx-fit-to-height: 25;
+  }
+
+  > .ikonli-font-icon {
+    -fx-icon-size: 25px;
+
+    &.unvisited {
+      -fx-icon-color: -grid-border-color;
+    }
+
+    &.visited {
+      -fx-icon-color: -visited-color;
+    }
+
+    &.visitedSecond {
+      -fx-icon-color: -visited-second-color;
+    }
+
+    &.shortest-path {
+      -fx-icon-color: -shortest-path-color;
+    }
+
+    &.wall {
+      -fx-icon-color: -wall-color;
+    }
+  }
+}
+

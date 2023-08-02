@@ -2,7 +2,7 @@ package org.mahefa.data;
 
 import org.mahefa.common.enumerator.Flag;
 
-import java.util.function.IntBinaryOperator;
+import java.util.function.BiConsumer;
 import java.util.stream.IntStream;
 
 public class Grid {
@@ -11,23 +11,36 @@ public class Grid {
     private int rowLen;
     private int colLen;
 
-    public Grid(int CANVAS_WIDTH, int CANVAS_HEIGHT, int squareSize, boolean fullOfWalls, IntBinaryOperator func) {
-        final int gapRow = CANVAS_HEIGHT % squareSize;
-        final int gapCol = CANVAS_WIDTH % squareSize;
-        this.rowLen = (CANVAS_HEIGHT - gapRow) / squareSize;
-        this.colLen = (CANVAS_WIDTH - gapCol) / squareSize;
+    private Cell startCell;
+    private Cell targetCell;
 
+    public Grid(int canvasWidth, int canvasHeight, int squareSize, BiConsumer<Cell, Integer> func) {
+        final int gapRow = canvasHeight % squareSize;
+        final int gapCol = canvasWidth % squareSize;
+
+        this.rowLen = (canvasHeight - gapRow) / squareSize;
+        this.colLen = (canvasWidth - gapCol) / squareSize;
         this.cells = new Cell[rowLen][colLen];
 
+        // Default start and target cell position
+        this.startCell = new Cell(new Location((int) Math.ceil(this.rowLen / 2d), (int) Math.ceil(this.colLen / 4d)));
+        this.targetCell = new Cell(new Location(
+                (int) Math.ceil(this.rowLen - (this.rowLen / 2d)),
+                (int) Math.ceil((this.colLen - 1d) - (this.colLen / 4d))
+        ));
+
+        // Build grid
         IntStream.iterate(gapRow / 2, i -> i + squareSize).limit(rowLen).forEach(i -> {
             IntStream.iterate(gapCol / 2, j -> j + squareSize).limit(colLen).forEach(j -> {
-                final Location location = new Location(i / squareSize, j / squareSize);
-                Cell cell = (fullOfWalls)
-                        ? new Cell(location, Flag.WALL)
-                        : new Cell(location, Flag.PATH);
+                Cell cell = new Cell(i, j, squareSize);
+                cell.setFlag(startCell.equals(cell) ? Flag.START : targetCell.equals(cell) ? Flag.TARGET : Flag.UNVISITED);
+
+                final Location location = cell.getLocation();
 
                 this.cells[location.getX()][location.getY()] = cell;
-                func.applyAsInt(j, i);
+
+                // Showing up current tile in UI
+                func.accept(cell, colLen);
             });
         });
     }
@@ -49,14 +62,27 @@ public class Grid {
     }
 
     public Cell getCellAt(Location location) {
-        return getCellAt(location.getX(), location.getY());
+        return cells[location.getX()][location.getY()];
     }
 
     public Cell getCellAt(int r, int c) {
         return cells[r][c];
     }
 
-    public void clear() {
-        this.cells = new Cell[rowLen][colLen];
+    public Cell getStartCell() {
+        return startCell;
     }
+
+    public void setStartCell(Cell startCell) {
+        this.startCell = startCell;
+    }
+
+    public Cell getTargetCell() {
+        return targetCell;
+    }
+
+    public void setTargetCell(Cell targetCell) {
+        this.targetCell = targetCell;
+    }
+
 }
