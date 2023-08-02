@@ -3,6 +3,8 @@ name: Java CI with Maven and JavaFX
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
