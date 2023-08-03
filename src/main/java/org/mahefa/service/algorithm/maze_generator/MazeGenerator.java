@@ -1,7 +1,5 @@
 package org.mahefa.service.algorithm.maze_generator;
 
-import org.mahefa.common.enumerator.Flag;
-import org.mahefa.data.Cell;
 import org.mahefa.data.Grid;
 import org.mahefa.data.Location;
 

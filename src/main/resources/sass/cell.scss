@@ -1,4 +1,4 @@
-#cell {
+.cell {
   -fx-border-style: solid;
   -fx-border-width: 1px;
   -fx-stroke-borders: 1px;
@@ -6,11 +6,16 @@
   -fx-pref-width: 25;
   -fx-pref-height: 25;
 
-  > .start {
+  &:unvisited {
+    -fx-background-color: -path-color;
+    -fx-border-color: -grid-border-color;
+  }
+
+  &:start > .icon {
     -fx-image: url("/icons/triangletwo-right.png");
   }
 
-  > .target {
+  &:target > .icon {
     -fx-image: url("/icons/circle.png");
   }
 
@@ -19,7 +24,7 @@
     -fx-border-color: -wall-color;
   }
 
-  &.pointer {
+  &:pointer {
     -fx-background-color: -pointer-color!important;
     -fx-border-color: -pointer-color!important;;
   }
@@ -32,10 +37,5 @@
   &.visited {
     -fx-background-color: -visited-color!important;
     -fx-border-color: -visited-color!important;
-  }
-
-  &.unvisited {
-    -fx-background-color: -path-color;
-    -fx-border-color: -grid-border-color;
   }
 }

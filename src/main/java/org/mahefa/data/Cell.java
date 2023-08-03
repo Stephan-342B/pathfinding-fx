@@ -1,32 +1,75 @@
 package org.mahefa.data;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.layout.Pane;
+import org.mahefa.common.CellStyle.*;
 import org.mahefa.common.enumerator.Direction;
-import org.mahefa.common.enumerator.Flag;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Cell extends Cost {
+import static org.mahefa.common.CellStyle.Flag.UNVISITED;
+import static org.mahefa.common.CellStyle.*;
 
-    public int row;
-    public int col;
+public class Cell extends Pane {
 
     private Location location;
     private Stack<Flag> oldFlag = new Stack<>();
-    private SimpleObjectProperty<Flag> flag;
+    private ObjectProperty<Flag> flag = new SimpleObjectProperty<>(UNVISITED) {
+        @Override
+        public void invalidated() {
+            pseudoClassStateChanged(START_PSEUDO_CLASS, false);
+            pseudoClassStateChanged(TARGET_PSEUDO_CLASS, false);
+            pseudoClassStateChanged(WALL_PSEUDO_CLASS, false);
+            pseudoClassStateChanged(POINTER_PSEUDO_CLASS, false);
+            pseudoClassStateChanged(PATH_PSEUDO_CLASS, false);
+            pseudoClassStateChanged(VISITED_PSEUDO_CLASS, false);
 
-    public Cell() {}
+            switch (get()) {
+                case START:
+                    pseudoClassStateChanged(START_PSEUDO_CLASS, true);
+                    break;
+                case TARGET:
+                    pseudoClassStateChanged(TARGET_PSEUDO_CLASS, true);
+                    break;
+                case WALL:
+                    pseudoClassStateChanged(WALL_PSEUDO_CLASS, true);
+                    break;
+                case POINTER:
+                    pseudoClassStateChanged(POINTER_PSEUDO_CLASS, true);
+                    break;
+                case PATH:
+                    pseudoClassStateChanged(PATH_PSEUDO_CLASS, true);
+                    break;
+                case VISITED:
+                    pseudoClassStateChanged(VISITED_PSEUDO_CLASS, true);
+                    break;
+                default:
+                    pseudoClassStateChanged(UNVISITED_PSEUDO_CLASS, true);
+                    break;
+            }
+        }
+    };
 
     public Cell(Location location) {
+        super();
+
         this.location = location;
     }
 
     public Cell(int row, int col, int squareSize) {
-        this.row = row;
-        this.col = col;
+        super();
+        getStyleClass().add("cell");
 
         this.location = new Location(row / squareSize, col / squareSize);
+
+        setId("cell_" + col + "_" + row);
+        setLayoutX(col);
+        setLayoutY(row);
+        setPrefWidth(squareSize);
+        setPrefHeight(squareSize);
+        setPickOnBounds(true);
     }
 
     public Set<Cell> getNeighbours(Grid grid) {
@@ -57,11 +100,11 @@ public class Cell extends Cost {
         return flag.get();
     }
 
-    public SimpleObjectProperty<Flag> flagProperty() {
+    public ObjectProperty<Flag> flagProperty() {
         return flag;
     }
 
-    public void setFlagProperty(SimpleObjectProperty<Flag> flagProperty) {
+    public void setFlagProperty(ObjectProperty<Flag> flagProperty) {
         this.flag = flagProperty;
     }
 
@@ -96,12 +139,6 @@ public class Cell extends Cost {
     }
 
     private void setFlag(Flag value, boolean isRevert) {
-        if (this.flag == null) {
-            this.flag = new SimpleObjectProperty<>(value);
-
-            return;
-        }
-
         if (!isRevert)
             this.oldFlag.push(this.flag.get());
 

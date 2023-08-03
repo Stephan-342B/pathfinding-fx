@@ -8,12 +8,11 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import org.mahefa.common.enumerator.Flag;
+import org.mahefa.common.CellStyle.Flag;
 import org.mahefa.data.Cell;
 import org.mahefa.data.Grid;
-import org.mahefa.data.Location;
 import org.mahefa.data.builder.Navbar;
-import org.mahefa.data.builder.TileBuilder;
+import org.mahefa.events.CellEventHandler;
 import org.mahefa.service.algorithm.maze_generator.AldousBroder;
 import org.mahefa.service.algorithm.maze_generator.Randomized;
 import org.mahefa.service.algorithm.maze_generator.RandomizedPrim;
@@ -80,18 +79,20 @@ public class MainWindowController {
         });
 
         borderPane.addEventFilter(DragEvent.DRAG_OVER, event -> {
-            Node targetNode = (Node) event.getTarget();
             Node sourceNode = (Node) event.getGestureSource();
             Dragboard dragboard = event.getDragboard();
 
-            if (dragboard.hasString() && sourceNode != null && sourceNode.getId() != null && sourceNode.getId().equals("cell")) {
-                if (targetNode != null && targetNode.getId() != null && !targetNode.getId().equals("cell")) {
+            if (dragboard.hasString() && sourceNode != null && sourceNode.getId() != null && sourceNode.getId().startsWith("cell")) {
+                Node targetNode = (Node) event.getTarget();
+
+                if (targetNode != null && targetNode.getId() != null && !targetNode.getId().startsWith("cell")) {
                     final String cssClass = dragboard.getString();
+                    ((Cell) sourceNode).resetFlag(Flag.valueOf(cssClass));
 
-                    Cell sourceCell = (Cell) sourceNode.getUserData();
-                    sourceCell.resetFlag(Flag.valueFor(cssClass));
+                    ImageView imageView = (ImageView) ((Cell) sourceNode).getChildren().get(0);
+                    imageView.visibleProperty().setValue(true);
 
-//                event.consume();
+                    new ZoomIn(imageView).play();
                 }
             }
         });
@@ -104,42 +105,36 @@ public class MainWindowController {
             gridPane.getChildren().clear();
 
             // Create a grid
-            grid = new Grid(width, height, squareSize, (currentCell, colLen) -> {
-                final Location currentLocation = currentCell.getLocation();
-                final int currentIndex = (currentLocation.getX() * colLen) + currentLocation.getY();
+            grid = new Grid(width, height, squareSize, (currentCell) -> {
+                final Flag currentFlag = currentCell.getFlag();
 
-                // Update tile depending on the current flag
-                currentCell.flagProperty().addListener((observableValue, oldFlag, newFlag) -> {
-                    Pane currentSquare = (Pane) gridPane.getChildren().get(currentIndex);
-                    currentSquare.getStyleClass().clear();
-                    currentSquare.getStyleClass().add(newFlag.getCssClassValue());
+                if (currentFlag.equals(Flag.START) || currentFlag.equals(Flag.TARGET)) {
+                    ImageView imageView = new ImageView();
+                    imageView.setFitWidth(currentCell.getPrefWidth());
+                    imageView.setFitHeight(currentCell.getPrefHeight());
+                    imageView.setPickOnBounds(false);
+                    imageView.setPreserveRatio(true);
+                    imageView.getStyleClass().add("icon");
 
-                    // Update start and target cell position
-                    if ((oldFlag.equals(Flag.START) || oldFlag.equals(Flag.TARGET)) && !newFlag.equals(oldFlag)) {
-                        ImageView imageView = (ImageView) currentSquare.getChildren().get(0);
-                        imageView.visibleProperty().setValue(false);
-                    }
+                    currentCell.getChildren().add(imageView);
 
-                    if (newFlag.equals(Flag.START) || newFlag.equals(Flag.TARGET)) {
-                        if (newFlag.equals(Flag.START)) {
-                            grid.setStartCell(currentCell);
-                        } else if (newFlag.equals(Flag.TARGET)) {
-                            grid.setTargetCell(currentCell);
-                        }
+                    imageView.managedProperty().bind(imageView.visibleProperty());
 
-                        ImageView imageView = (ImageView) currentSquare.getChildren().get(0);
-                        imageView.visibleProperty().setValue(true);
+                    new ZoomIn(imageView).play();
+                }
 
-                        new ZoomIn(imageView).play();
-                    }
-                });
+                gridPane.getChildren().add(currentCell);
 
-                final TileBuilder tileBuilder = new TileBuilder(currentCell.col, currentCell.row)
-                        .setSize(squareSize)
-                        .setUserData(currentCell);
-
-                gridPane.getChildren().add(tileBuilder.build());
+                addCellEvent(currentCell);
             });
         });
+    }
+
+    private void addCellEvent(Cell cell) {
+        CellEventHandler cellEventHandler = new CellEventHandler();
+
+        cell.setOnDragDetected(event -> cellEventHandler.handle(event));
+        cell.setOnDragOver(event -> cellEventHandler.handle(event));
+        cell.setOnDragDropped(event -> cellEventHandler.handle(event));
     }
 }
