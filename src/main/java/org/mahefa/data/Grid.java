@@ -1,8 +1,8 @@
 package org.mahefa.data;
 
-import org.mahefa.common.enumerator.Flag;
+import org.mahefa.common.CellStyle.Flag;
 
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 public class Grid {
@@ -14,7 +14,7 @@ public class Grid {
     private Cell startCell;
     private Cell targetCell;
 
-    public Grid(int canvasWidth, int canvasHeight, int squareSize, BiConsumer<Cell, Integer> func) {
+    public Grid(int canvasWidth, int canvasHeight, int squareSize, Consumer<Cell> func) {
         final int gapRow = canvasHeight % squareSize;
         final int gapCol = canvasWidth % squareSize;
 
@@ -40,7 +40,7 @@ public class Grid {
                 this.cells[location.getX()][location.getY()] = cell;
 
                 // Showing up current tile in UI
-                func.accept(cell, colLen);
+                func.accept(cell);
             });
         });
     }

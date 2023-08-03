@@ -121,7 +121,7 @@
                   </HBox>
                   <HBox fx:id="gridContainer" alignment="CENTER" pickOnBounds="false" VBox.vgrow="ALWAYS">
                      <children>
-                        <Pane fx:id="gridPane" pickOnBounds="false" HBox.hgrow="ALWAYS" />
+                        <Pane id="gridPane" fx:id="gridPane" pickOnBounds="false" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                </children>
