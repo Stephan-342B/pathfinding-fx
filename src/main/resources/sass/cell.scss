@@ -19,7 +19,7 @@
     -fx-image: url("/icons/circle.png");
   }
 
-  &.wall {
+  &:wall {
     -fx-background-color: -wall-color;
     -fx-border-color: -wall-color;
   }
@@ -29,12 +29,12 @@
     -fx-border-color: -pointer-color!important;;
   }
 
-  &.path {
+  &:path {
     -fx-background-color: -shortest-path-color;
     -fx-border-color: -shortest-path-color;
   }
 
-  &.visited {
+  &:visited {
     -fx-background-color: -visited-color!important;
     -fx-border-color: -visited-color!important;
   }
