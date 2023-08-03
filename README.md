@@ -1,4 +1,4 @@
-# Pathfinding Visualizer with JavaFx (In development)
+# PathfindingFx (In development)
 The project is a JavaFx version of the Pathfinding Visualizer made by Clément Mihailescu ([Link](https://clementmihailescu.github.io/Pathfinding-Visualizer/#)).
 
 <p align="center">
