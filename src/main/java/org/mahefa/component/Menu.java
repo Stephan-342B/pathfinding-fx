@@ -11,7 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.mahefa.common.custom_animations.ColorTransition;
+import org.mahefa.common.custom_animations.BackgroundColorTransition;
 import org.mahefa.events.MenuEventHandler;
 
 import java.io.IOException;
@@ -79,7 +79,7 @@ public class Menu extends HBox {
                 if (t1 != null && t1.equals(State.ACTIVE_WITH_DROPDOWN))
                     newBgColor = Color.valueOf("#1ABC9C");
 
-                new ColorTransition(Duration.millis(250), newBgColor, this).play();
+                new BackgroundColorTransition(Duration.millis(250), newBgColor, this).play();
             });
         } catch (IOException e) {
             e.printStackTrace();

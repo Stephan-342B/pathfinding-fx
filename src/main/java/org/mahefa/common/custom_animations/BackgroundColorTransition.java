@@ -3,17 +3,17 @@ package org.mahefa.common.custom_animations;
 import javafx.animation.Transition;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
-import org.mahefa.component.Menu;
 
-public class ColorTransition extends Transition {
+public class BackgroundColorTransition extends Transition {
 
     private final Color startColor;
     private final Color endColor;
-    private final Menu target;
+    private final Pane target;
 
-    public ColorTransition(Duration duration, Color newBgColor, Menu target) {
+    public BackgroundColorTransition(Duration duration, Color newBgColor, Pane target) {
         this.setCycleDuration(duration);
         this.endColor = newBgColor;
         this.target = target;
