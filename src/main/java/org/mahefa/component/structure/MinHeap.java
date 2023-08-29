@@ -1,6 +1,6 @@
-package org.mahefa.data.structure;
+package org.mahefa.component.structure;
 
-import org.mahefa.data.ComparableNode;
+import org.mahefa.component.ComparableNode;
 
 import java.util.Collections;
 

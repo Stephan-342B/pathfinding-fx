@@ -13,6 +13,6 @@ public class CellStyle {
     public static final PseudoClass UNVISITED_PSEUDO_CLASS = PseudoClass.getPseudoClass("unvisited");
 
     public enum Flag {
-        START, TARGET, WALL, PATH, POINTER, VISITED, UNVISITED;
+        NONE, START, TARGET, WALL, PATH, POINTER, VISITED, UNVISITED;
     }
 }

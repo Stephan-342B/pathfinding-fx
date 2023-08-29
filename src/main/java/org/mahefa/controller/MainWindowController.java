@@ -9,9 +9,9 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import org.mahefa.common.CellStyle.Flag;
-import org.mahefa.data.Cell;
-import org.mahefa.data.Grid;
-import org.mahefa.data.builder.Navbar;
+import org.mahefa.component.Cell;
+import org.mahefa.component.Grid;
+import org.mahefa.component.Navbar;
 import org.mahefa.events.CellEventHandler;
 import org.mahefa.service.algorithm.maze_generator.AldousBroder;
 import org.mahefa.service.algorithm.maze_generator.Randomized;
@@ -29,7 +29,7 @@ public class MainWindowController {
 
     @FXML StackPane stackPane;
     @FXML BorderPane borderPane;
-    @FXML FlowPane navbarPane;
+    @FXML Navbar navbar;
     @FXML VBox content;
     @FXML HBox legend;
     @FXML HBox description;
@@ -42,9 +42,6 @@ public class MainWindowController {
     @Autowired AldousBroder aldousBroder;
     @Autowired RandomizedPrim randomizedPrim;
 
-    private Grid grid;
-    private Navbar navbar;
-
     @FXML
     private void initialize() {
         // Bind width and height property
@@ -55,9 +52,7 @@ public class MainWindowController {
         gridPane.prefWidthProperty().bind(gridContainer.widthProperty());
         gridPane.prefHeightProperty().bind(gridContainer.heightProperty());
 
-        navbar = new Navbar.Builder(navbarPane)
-                .setArea(stackPane)
-                .build();
+        navbar.setArea(stackPane);
 
         borderPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             if (navbar.getCurrentActiveMenu() == null)
@@ -74,7 +69,7 @@ public class MainWindowController {
                     clickedNode.getId() == null ||
                     (!clickedNode.getId().startsWith("menu_") && !clickedNode.getId().equalsIgnoreCase("submenu"))
             ) {
-                navbar.setMenuToDefault();
+                navbar.setCurrentActiveMenu(null);
             }
         });
 
@@ -105,7 +100,7 @@ public class MainWindowController {
             gridPane.getChildren().clear();
 
             // Create a grid
-            grid = new Grid(width, height, squareSize, (currentCell) -> {
+            new Grid(width, height, squareSize, (currentCell) -> {
                 final Flag currentFlag = currentCell.getFlag();
 
                 if (currentFlag.equals(Flag.START) || currentFlag.equals(Flag.TARGET)) {

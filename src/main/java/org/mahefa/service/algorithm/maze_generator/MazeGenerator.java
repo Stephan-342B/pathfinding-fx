@@ -1,7 +1,7 @@
 package org.mahefa.service.algorithm.maze_generator;
 
-import org.mahefa.data.Grid;
-import org.mahefa.data.Location;
+import org.mahefa.component.Grid;
+import org.mahefa.component.Location;
 
 public abstract class MazeGenerator {
 

@@ -1,4 +1,4 @@
-package org.mahefa.data;
+package org.mahefa.component;
 
 import org.mahefa.common.CellStyle.Flag;
 

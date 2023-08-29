@@ -48,6 +48,7 @@ public class PathFindingFx extends Application {
         springContext = SpringApplication.run(PathFindingFx.class);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainWindow.fxml"));
         fxmlLoader.setControllerFactory(springContext::getBean);
+
         rootNode = fxmlLoader.load();
     }
 

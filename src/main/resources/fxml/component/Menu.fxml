@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<fx:root alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="53.0" styleClass="menu" type="javafx.scene.layout.HBox" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+    <Text fx:id="label" strokeType="OUTSIDE" strokeWidth="0.0" text="Default text">
+        <font>
+            <Font name="Lato Regular" size="14.0" />
+        </font>
+    </Text>
+    <FontIcon fx:id="fontIcon" />
+   <padding>
+      <Insets bottom="15.0" left="21.0" right="21.0" top="15.0" />
+   </padding>
+</fx:root>
