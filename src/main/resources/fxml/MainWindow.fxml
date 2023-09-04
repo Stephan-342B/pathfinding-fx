@@ -1,22 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+<?import org.mahefa.component.Navbar?>
 
 <StackPane fx:id="stackPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="870.0" minWidth="1100.0" pickOnBounds="false" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.mahefa.controller.MainWindowController">
    <children>
       <BorderPane fx:id="borderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
+         <top>
+            <Navbar fx:id="navbar" title="Pathfinding Visualizer" BorderPane.alignment="CENTER" />
+         </top>
          <center>
             <VBox fx:id="content" BorderPane.alignment="CENTER">
                <children>
@@ -127,132 +124,6 @@
                </children>
             </VBox>
          </center>
-         <top>
-            <FlowPane fx:id="navbarPane" minHeight="53.0" styleClass="navbar" BorderPane.alignment="CENTER">
-               <children>
-                  <HBox fx:id="navbarTitle" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="53.0" styleClass="title">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Pathfinding Visualizer">
-                           <font>
-                              <Font name="Lato Regular" size="20.0" />
-                           </font>
-                        </Text>
-                     </children>
-                     <padding>
-                        <Insets bottom="14.0" left="21.0" right="21.0" top="14.0" />
-                     </padding>
-                     <FlowPane.margin>
-                        <Insets />
-                     </FlowPane.margin>
-                  </HBox>
-                  <HBox fx:id="menu_algorithms" alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="53.0" spacing="2.0">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Algorithms">
-                           <font>
-                              <Font name="Lato Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <FontIcon iconLiteral="ci-caret-down" iconSize="25" />
-                     </children>
-                     <padding>
-                        <Insets bottom="15.0" left="21.0" right="21.0" top="15.0" />
-                     </padding>
-                     <styleClass>
-                        <String fx:value="menu" />
-                        <String fx:value="has-submenu" />
-                     </styleClass>
-                  </HBox>
-                  <HBox fx:id="menu_mazes_patterns" alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="53.0" spacing="2.0">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Mazes &amp; Patterns">
-                           <font>
-                              <Font name="Lato Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <FontIcon iconLiteral="ci-caret-down" iconSize="25" />
-                     </children>
-                     <padding>
-                        <Insets bottom="15.0" left="21.0" right="21.0" top="15.0" />
-                     </padding>
-                     <styleClass>
-                        <String fx:value="menu" />
-                        <String fx:value="has-submenu" />
-                     </styleClass>
-                  </HBox>
-                  <HBox fx:id="navbarBtnPlay" alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="41.0" styleClass="btn-play">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Visualize!">
-                           <font>
-                              <Font name="Lato Regular" size="14.0" />
-                           </font>
-                        </Text>
-                     </children>
-                     <FlowPane.margin>
-                        <Insets bottom="6.0" left="20.0" right="20.0" top="4.0" />
-                     </FlowPane.margin>
-                     <padding>
-                        <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
-                     </padding>
-                  </HBox>
-                  <HBox fx:id="menu_clear_board" alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="53.0" styleClass="menu">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Clear Board">
-                           <font>
-                              <Font name="Lato Regular" size="14.0" />
-                           </font>
-                        </Text>
-                     </children>
-                     <padding>
-                        <Insets bottom="15.0" left="21.0" right="21.0" top="15.0" />
-                     </padding>
-                  </HBox>
-                  <HBox fx:id="menu_clear_walls_weights" alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="53.0" styleClass="menu">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Clear Walls &amp; Weights">
-                           <font>
-                              <Font name="Lato Regular" size="14.0" />
-                           </font>
-                        </Text>
-                     </children>
-                     <padding>
-                        <Insets bottom="15.0" left="21.0" right="21.0" top="15.0" />
-                     </padding>
-                  </HBox>
-                  <HBox fx:id="menu_clear_path" alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="53.0" styleClass="menu">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Clear Path">
-                           <font>
-                              <Font name="Lato Regular" size="14.0" />
-                           </font>
-                        </Text>
-                     </children>
-                     <padding>
-                        <Insets bottom="15.0" left="21.0" right="21.0" top="15.0" />
-                     </padding>
-                  </HBox>
-                  <HBox fx:id="menu_speed" alignment="CENTER" layoutX="245.0" layoutY="11.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="53.0" spacing="2.0">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Speed: Fast">
-                           <font>
-                              <Font name="Lato Regular" size="14.0" />
-                           </font>
-                        </Text>
-                        <FontIcon iconLiteral="ci-caret-down" iconSize="25" />
-                     </children>
-                     <padding>
-                        <Insets bottom="15.0" left="21.0" right="21.0" top="15.0" />
-                     </padding>
-                     <styleClass>
-                        <String fx:value="menu" />
-                        <String fx:value="has-submenu" />
-                     </styleClass>
-                  </HBox>
-               </children>
-               <BorderPane.margin>
-                  <Insets />
-               </BorderPane.margin>
-            </FlowPane>
-         </top>
       </BorderPane>
    </children>
 </StackPane>

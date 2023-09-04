@@ -1,4 +1,4 @@
-package org.mahefa.data.structure;
+package org.mahefa.component.structure;
 
 import java.util.ArrayList;
 import java.util.Collections;

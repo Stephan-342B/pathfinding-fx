@@ -9,9 +9,9 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import org.mahefa.common.CellStyle.Flag;
-import org.mahefa.data.Cell;
-import org.mahefa.data.Grid;
-import org.mahefa.data.builder.Navbar;
+import org.mahefa.component.Cell;
+import org.mahefa.component.Grid;
+import org.mahefa.component.Navbar;
 import org.mahefa.events.CellEventHandler;
 import org.mahefa.service.algorithm.maze_generator.AldousBroder;
 import org.mahefa.service.algorithm.maze_generator.Randomized;
@@ -29,7 +29,7 @@ public class MainWindowController {
 
     @FXML StackPane stackPane;
     @FXML BorderPane borderPane;
-    @FXML FlowPane navbarPane;
+    @FXML Navbar navbar;
     @FXML VBox content;
     @FXML HBox legend;
     @FXML HBox description;
@@ -42,22 +42,22 @@ public class MainWindowController {
     @Autowired AldousBroder aldousBroder;
     @Autowired RandomizedPrim randomizedPrim;
 
-    private Grid grid;
-    private Navbar navbar;
+    public static Grid grid;
 
     @FXML
     private void initialize() {
         // Bind width and height property
         borderPane.prefWidthProperty().bind(stackPane.widthProperty());
         borderPane.prefHeightProperty().bind(stackPane.heightProperty());
+        navbar.prefWidthProperty().bind(borderPane.prefWidthProperty());
         gridContainer.prefWidthProperty().bind(content.widthProperty());
         gridContainer.prefHeightProperty().bind(content.heightProperty().subtract(legend.getHeight()).subtract(description.getHeight()));
         gridPane.prefWidthProperty().bind(gridContainer.widthProperty());
         gridPane.prefHeightProperty().bind(gridContainer.heightProperty());
 
-        navbar = new Navbar.Builder(navbarPane)
-                .setArea(stackPane)
-                .build();
+        navbar.setArea(stackPane);
+
+//        ((Text) description.getChildren().get(0)).textProperty().bind(navbar.descriptionLabelProperty());
 
         borderPane.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             if (navbar.getCurrentActiveMenu() == null)
@@ -74,7 +74,7 @@ public class MainWindowController {
                     clickedNode.getId() == null ||
                     (!clickedNode.getId().startsWith("menu_") && !clickedNode.getId().equalsIgnoreCase("submenu"))
             ) {
-                navbar.setMenuToDefault();
+                navbar.setCurrentActiveMenu(null);
             }
         });
 
@@ -98,36 +98,7 @@ public class MainWindowController {
         });
 
         // Update grid accordingly to the size of the container
-        gridPane.layoutBoundsProperty().addListener((e) -> {
-            int width = (int) gridPane.getPrefWidth();
-            int height = (int) gridPane.getPrefHeight();
-
-            gridPane.getChildren().clear();
-
-            // Create a grid
-            grid = new Grid(width, height, squareSize, (currentCell) -> {
-                final Flag currentFlag = currentCell.getFlag();
-
-                if (currentFlag.equals(Flag.START) || currentFlag.equals(Flag.TARGET)) {
-                    ImageView imageView = new ImageView();
-                    imageView.setFitWidth(currentCell.getPrefWidth());
-                    imageView.setFitHeight(currentCell.getPrefHeight());
-                    imageView.setPickOnBounds(false);
-                    imageView.setPreserveRatio(true);
-                    imageView.getStyleClass().add("icon");
-
-                    currentCell.getChildren().add(imageView);
-
-                    imageView.managedProperty().bind(imageView.visibleProperty());
-
-                    new ZoomIn(imageView).play();
-                }
-
-                gridPane.getChildren().add(currentCell);
-
-                addCellEvent(currentCell);
-            });
-        });
+        gridPane.layoutBoundsProperty().addListener((e) -> resetGridAction());
     }
 
     private void addCellEvent(Cell cell) {
@@ -136,5 +107,36 @@ public class MainWindowController {
         cell.setOnDragDetected(event -> cellEventHandler.handle(event));
         cell.setOnDragOver(event -> cellEventHandler.handle(event));
         cell.setOnDragDropped(event -> cellEventHandler.handle(event));
+    }
+
+    private void resetGridAction() {
+        int width = (int) gridPane.getPrefWidth();
+        int height = (int) gridPane.getPrefHeight();
+
+        gridPane.getChildren().clear();
+
+        // Create a grid
+        grid = new Grid(width, height, squareSize, (currentCell) -> {
+            final Flag currentFlag = currentCell.getFlag();
+
+            if (currentFlag.equals(Flag.START) || currentFlag.equals(Flag.TARGET)) {
+                ImageView imageView = new ImageView();
+                imageView.setFitWidth(currentCell.getPrefWidth());
+                imageView.setFitHeight(currentCell.getPrefHeight());
+                imageView.setPickOnBounds(false);
+                imageView.setPreserveRatio(true);
+                imageView.getStyleClass().add("icon");
+
+                currentCell.getChildren().add(imageView);
+
+                imageView.managedProperty().bind(imageView.visibleProperty());
+
+                new ZoomIn(imageView).play();
+            }
+
+            gridPane.getChildren().add(currentCell);
+
+            addCellEvent(currentCell);
+        });
     }
 }

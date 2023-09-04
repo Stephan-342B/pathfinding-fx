@@ -9,7 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import org.mahefa.common.CellStyle;
-import org.mahefa.data.Cell;
+import org.mahefa.component.Cell;
 
 public class CellEventHandler implements EventHandler<Event> {
 

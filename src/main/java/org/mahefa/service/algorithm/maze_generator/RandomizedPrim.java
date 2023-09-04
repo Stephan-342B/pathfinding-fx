@@ -1,6 +1,6 @@
 package org.mahefa.service.algorithm.maze_generator;
 
-import org.mahefa.data.Grid;
+import org.mahefa.component.Grid;
 import org.springframework.stereotype.Component;
 
 @Component

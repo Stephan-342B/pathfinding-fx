@@ -1,6 +1,6 @@
 package org.mahefa.service.algorithm.pathfinding;
 
-import org.mahefa.data.Cell;
+import org.mahefa.component.Cell;
 
 import java.util.List;
 

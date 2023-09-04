@@ -1,4 +1,4 @@
-package org.mahefa.data;
+package org.mahefa.component;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;

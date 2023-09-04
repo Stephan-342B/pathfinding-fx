@@ -1,4 +1,4 @@
-package org.mahefa.data;
+package org.mahefa.component;
 
 public class ComparableNode {
 
