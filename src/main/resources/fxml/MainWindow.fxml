@@ -12,11 +12,7 @@
    <children>
       <BorderPane fx:id="borderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity">
          <top>
-            <Navbar fx:id="navbar" text="Pathfinding Visualizer" BorderPane.alignment="CENTER"  minHeight="53.0" styleClass="navbar">
-               <BorderPane.margin>
-                  <Insets />
-               </BorderPane.margin>
-            </Navbar>
+            <Navbar fx:id="navbar" title="Pathfinding Visualizer" BorderPane.alignment="CENTER" />
          </top>
          <center>
             <VBox fx:id="content" BorderPane.alignment="CENTER">

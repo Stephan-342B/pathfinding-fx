@@ -1,57 +1,30 @@
 package org.mahefa.component;
 
-import javafx.beans.property.IntegerProperty;
+import javafx.beans.DefaultProperty;
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.mahefa.common.custom_animations.BackgroundColorTransition;
-import org.mahefa.events.MenuEventHandler;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-import static org.mahefa.common.MenuStyle.*;
+@DefaultProperty("items")
+public class Menu extends HBox implements Initializable {
 
-public class Menu extends HBox {
+    @FXML private Text label;
+    @FXML private FontIcon fontIcon;
 
-    @FXML
-    private Text label;
-
-    @FXML
-    private FontIcon fontIcon;
-
-    private Submenu submenu;
-
-    private MenuEventHandler menuEventHandler = new MenuEventHandler();
-
-    private ObjectProperty<State> state = new SimpleObjectProperty<>() {
-        @Override
-        public void invalidated() {
-            pseudoClassStateChanged(HOVER_PSEUDO_CLASS, false);
-            pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, false);
-            pseudoClassStateChanged(ACTIVE_DROPDOWN_PSEUDO_CLASS, false);
-
-            switch (get()) {
-                case HOVER:
-                    pseudoClassStateChanged(HOVER_PSEUDO_CLASS, true);
-                    break;
-                case ACTIVE:
-                    pseudoClassStateChanged(ACTIVE_PSEUDO_CLASS, true);
-                    break;
-                case ACTIVE_WITH_DROPDOWN:
-                    pseudoClassStateChanged(ACTIVE_DROPDOWN_PSEUDO_CLASS, true);
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
+    private final ObjectProperty<ObservableList<MenuItem>> items = new SimpleObjectProperty<>(this, "items", FXCollections.observableArrayList());
 
     public Menu() {
         super();
@@ -66,48 +39,19 @@ public class Menu extends HBox {
 
         try {
             fxmlLoader.load();
-
-            sceneProperty().addListener((observable, oldScene, newScene) -> {
-                if (newScene != null && this.submenu == null && Submenu.isPresent(getId())) {
-                    this.submenu = new Submenu(this);
-                }
-            });
-
-            state.addListener((observableValue, state1, t1) -> {
-                Color newBgColor = Color.TRANSPARENT;
-
-                if (t1 != null && t1.equals(State.ACTIVE_WITH_DROPDOWN))
-                    newBgColor = Color.valueOf("#1ABC9C");
-
-                new BackgroundColorTransition(Duration.millis(250), newBgColor, this).play();
-            });
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public Submenu getSubmenu() {
-        return submenu;
-    }
-
-    public State getState() {
-        return state.get();
-    }
-
-    public ObjectProperty<State> stateProperty() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state.set(state);
-    }
-
-    public MenuEventHandler getMenuEventHandler() {
-        return menuEventHandler;
-    }
-
-    public boolean hasSubmenu() {
-        return this.submenu != null;
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        getItems().addListener((InvalidationListener) change -> {
+            if (getItems().size() > 0) {
+                fontIcon.setIconLiteral("ci-caret-down");
+                fontIcon.setIconSize(25);
+            }
+        });
     }
 
     public String getText() {
@@ -122,23 +66,27 @@ public class Menu extends HBox {
         return label.textProperty();
     }
 
-    public String getIconLiteral() {
-        return fontIcon.getIconLiteral();
+    public Text getLabel() {
+        return label;
     }
 
-    public void setIconLiteral(String value) {
-        fontIcon.setIconLiteral(value);
+    public FontIcon getFontIcon() {
+        return fontIcon;
     }
 
-    public Integer getIconSize() {
-        return iconSizeProperty().get();
+    public void setFontIcon(FontIcon fontIcon) {
+        this.fontIcon = fontIcon;
     }
 
-    public void setIconSize(Integer size) {
-        iconSizeProperty().set(size);
+    public ObservableList<MenuItem> getItems() {
+        return items.get();
     }
 
-    public IntegerProperty iconSizeProperty() {
-        return fontIcon.iconSizeProperty();
+    public ObjectProperty<ObservableList<MenuItem>> itemsProperty() {
+        return items;
+    }
+
+    public boolean hasItems() {
+        return getItems().size() > 0;
     }
 }

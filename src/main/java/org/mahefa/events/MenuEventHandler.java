@@ -6,12 +6,9 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import org.mahefa.component.Menu;
 
-import static org.mahefa.common.MenuStyle.State.ACTIVE;
-import static org.mahefa.common.MenuStyle.State.ACTIVE_WITH_DROPDOWN;
-
 public class MenuEventHandler implements EventHandler<Event> {
 
-    ObjectProperty<Menu> currentActiveMenu;
+    private ObjectProperty<Menu> currentActiveMenu;
 
     @Override
     public void handle(Event event) {
@@ -20,19 +17,14 @@ public class MenuEventHandler implements EventHandler<Event> {
         }
     }
 
-    public void handle(ObjectProperty<Menu> currentActiveMenu, Event event) {
-        this.currentActiveMenu = currentActiveMenu;
-        handle(event);
-    }
-
     private void setOnMouseClickedProperty(MouseEvent event) {
-        Menu currentMenu = (Menu) event.getSource();
-        currentMenu.setState((currentMenu.hasSubmenu()) ? ACTIVE_WITH_DROPDOWN : ACTIVE);
+        Menu menu = (Menu) event.getSource();
 
-        currentActiveMenu.setValue(
-                (currentActiveMenu.get() == null || !currentActiveMenu.get().equals(currentMenu)) ? currentMenu : null
-        );
 
         event.consume();
+    }
+
+    public void attachObservableProperty(ObjectProperty<Menu> currentActiveMenu) {
+        this.currentActiveMenu = currentActiveMenu;
     }
 }
