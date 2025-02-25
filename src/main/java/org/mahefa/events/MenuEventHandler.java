@@ -1,14 +1,13 @@
 package org.mahefa.events;
 
-import javafx.beans.property.ObjectProperty;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import org.mahefa.component.Menu;
+import org.mahefa.component.MenuBar;
+import org.mahefa.component.Navbar;
 
 public class MenuEventHandler implements EventHandler<Event> {
-
-    private ObjectProperty<Menu> currentActiveMenu;
 
     @Override
     public void handle(Event event) {
@@ -18,13 +17,12 @@ public class MenuEventHandler implements EventHandler<Event> {
     }
 
     private void setOnMouseClickedProperty(MouseEvent event) {
-        Menu menu = (Menu) event.getSource();
+        Menu currentMenu = (Menu) event.getSource();
+        MenuBar menuBar = (MenuBar) currentMenu.getParent();
+        Navbar navbar = (Navbar) menuBar.getParent();
 
+        navbar.setCurrentActiveMenu(currentMenu);
 
         event.consume();
-    }
-
-    public void attachObservableProperty(ObjectProperty<Menu> currentActiveMenu) {
-        this.currentActiveMenu = currentActiveMenu;
     }
 }

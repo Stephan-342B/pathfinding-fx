@@ -4,12 +4,12 @@ import javafx.beans.binding.Bindings;
 import javafx.geometry.Orientation;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
+import org.mahefa.common.StateStyle;
 import org.mahefa.events.MenuItemEventHandler;
 
 public class Submenu extends Pane {
 
     private final Menu menu;
-
     private MenuItemEventHandler menuItemEventHandler = new MenuItemEventHandler();
 
     public Submenu(Menu menu) {
@@ -32,9 +32,12 @@ public class Submenu extends Pane {
 
             flowPane.getChildren().add(menuItem);
 
-            menuItem.onMouseClickedProperty().set(event -> {
-                getMenuItemEventHandler().handle(event);
-            });
+            menuItem.currentStateProperty().bind(
+                    Bindings.when(menu.lockableProperty())
+                            .then(menu.currentStateProperty())
+                            .otherwise(StateStyle.State.READY)
+            );
+            menuItem.setOnMouseClicked(menuItemEventHandler::handle);
         });
 
         getChildren().add(flowPane);
@@ -64,5 +67,9 @@ public class Submenu extends Pane {
 
     public MenuItemEventHandler getMenuItemEventHandler() {
         return menuItemEventHandler;
+    }
+
+    public void setMenuItemEventHandler(MenuItemEventHandler menuItemEventHandler) {
+        this.menuItemEventHandler = menuItemEventHandler;
     }
 }

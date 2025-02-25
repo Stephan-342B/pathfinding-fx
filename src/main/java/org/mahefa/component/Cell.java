@@ -4,125 +4,117 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.layout.Pane;
 import org.mahefa.common.CellStyle.*;
-import org.mahefa.common.enumerator.Direction;
+import org.mahefa.common.enumerator.NodeType;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Objects;
+import java.util.Stack;
 
-import static org.mahefa.common.CellStyle.Flag.UNVISITED;
 import static org.mahefa.common.CellStyle.*;
 
 public class Cell extends Pane {
 
+    private int weight;
+
     private Location location;
+    private ObjectProperty<NodeType> nodeType = new SimpleObjectProperty<>(NodeType.NONE);
     private Stack<Flag> oldFlag = new Stack<>();
-    private ObjectProperty<Flag> flag = new SimpleObjectProperty<>(UNVISITED) {
+    private ObjectProperty<Flag> flag = new SimpleObjectProperty<>() {
         @Override
         public void invalidated() {
-            pseudoClassStateChanged(START_PSEUDO_CLASS, false);
-            pseudoClassStateChanged(TARGET_PSEUDO_CLASS, false);
-            pseudoClassStateChanged(WALL_PSEUDO_CLASS, false);
+            pseudoClassStateChanged(WALL_NODE_PSEUDO_CLASS, false);
             pseudoClassStateChanged(POINTER_PSEUDO_CLASS, false);
-            pseudoClassStateChanged(PATH_PSEUDO_CLASS, false);
+            pseudoClassStateChanged(PATH_NODE_PSEUDO_CLASS, false);
             pseudoClassStateChanged(VISITED_PSEUDO_CLASS, false);
 
             switch (get()) {
-                case START:
-                    pseudoClassStateChanged(START_PSEUDO_CLASS, true);
-                    break;
-                case TARGET:
-                    pseudoClassStateChanged(TARGET_PSEUDO_CLASS, true);
-                    break;
-                case WALL:
-                    pseudoClassStateChanged(WALL_PSEUDO_CLASS, true);
+                case WALL_NODE:
+                    pseudoClassStateChanged(WALL_NODE_PSEUDO_CLASS, true);
                     break;
                 case POINTER:
                     pseudoClassStateChanged(POINTER_PSEUDO_CLASS, true);
                     break;
-                case PATH:
-                    pseudoClassStateChanged(PATH_PSEUDO_CLASS, true);
+                case PATH_NODE:
+                    pseudoClassStateChanged(PATH_NODE_PSEUDO_CLASS, true);
                     break;
                 case VISITED:
                     pseudoClassStateChanged(VISITED_PSEUDO_CLASS, true);
                     break;
                 default:
-                    pseudoClassStateChanged(UNVISITED_PSEUDO_CLASS, true);
                     break;
             }
         }
     };
 
-    public Cell(Location location) {
-        super();
-
-        this.location = location;
-    }
-
-    public Cell(int row, int col, int squareSize) {
+    public Cell(double posX, double posY, int row, int col, double gridSize) {
         super();
         getStyleClass().add("cell");
 
-        this.location = new Location(row / squareSize, col / squareSize);
+        String fxId = "cell_" + row + "_" + col;
 
-        setId("cell_" + col + "_" + row);
-        setLayoutX(col);
-        setLayoutY(row);
-        setPrefWidth(squareSize);
-        setPrefHeight(squareSize);
+        setUserData(fxId);
+        setLayoutX(posY);
+        setLayoutY(posX);
+        setPrefWidth(gridSize);
+        setWidth(gridSize);
+        setPrefHeight(gridSize);
+        setHeight(gridSize);
         setPickOnBounds(true);
-    }
 
-    public Set<Cell> getNeighbours(Grid grid) {
-        List<Location> locations = Arrays.asList(
-                location.move(Direction.UP), location.move(Direction.LEFT),
-                location.move(Direction.DOWN), location.move(Direction.RIGHT)
-        );
-
-        return locations.stream()
-                .filter(location -> (location.getX() >= 0 && location.getX() < grid.getRowLen()) && (location.getY() >= 0 && location.getY() < grid.getColLen()))
-                .map(location -> grid.getCellAt(location.getX(), location.getY()))
-                .collect(Collectors.toSet());
+        this.location = new Location(row, col);
+        this.weight = 0;
     }
 
     public Location getLocation() {
         return location;
     }
 
-    public Stack<Flag> getOldFlag() {
-        return oldFlag;
+    public NodeType getNodeType() {
+        return nodeType.get();
     }
 
-    public void setOldFlag(Stack<Flag> oldFlag) {
-        this.oldFlag = oldFlag;
+    public ObjectProperty<NodeType> nodeTypeProperty() {
+        return nodeType;
+    }
+
+    public void setNodeType(NodeType nodeType) {
+        this.nodeType.set(nodeType);
     }
 
     public Flag getFlag() {
         return flag.get();
     }
 
-    public ObjectProperty<Flag> flagProperty() {
-        return flag;
-    }
-
-    public void setFlagProperty(ObjectProperty<Flag> flagProperty) {
-        this.flag = flagProperty;
-    }
-
     public void setFlag(Flag flag) {
-        setFlag(flag, false);
+        Flag currentFlag = this.flag.get();
+
+        if (currentFlag != null)
+            this.oldFlag.push(this.flag.get());
+
+        this.flag.setValue(flag);
     }
 
-    public void revertFlag() {
-        Flag oldValue = Flag.UNVISITED;
+    public boolean revertFlag() {
+        boolean isReverted = false;
 
-        if (!oldFlag.isEmpty())
-            oldValue = oldFlag.pop();
+        if (!oldFlag.isEmpty()) {
+            this.flag.setValue(oldFlag.pop());
+            isReverted = true;
+        }
 
-        setFlag(oldValue, true);
+        return isReverted;
     }
 
     public void resetFlag(Flag defaultFlag) {
-        setFlag(defaultFlag);
+        oldFlag = new Stack<>();
+        flag.setValue(defaultFlag);
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 
     @Override
@@ -135,13 +127,6 @@ public class Cell extends Pane {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getLocation(), getFlag());
-    }
-
-    private void setFlag(Flag value, boolean isRevert) {
-        if (!isRevert)
-            this.oldFlag.push(this.flag.get());
-
-        this.flag.setValue(value);
+        return Objects.hash(getLocation());
     }
 }
