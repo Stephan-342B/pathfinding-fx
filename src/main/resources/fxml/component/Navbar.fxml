@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Text?>
+<?import org.mahefa.component.MenuBar?>
+
+<fx:root minHeight="53.0" styleClass="navbar" type="javafx.scene.layout.FlowPane" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+    <HBox fx:id="title">
+        <children>
+            <Text fx:id="label" strokeType="OUTSIDE" strokeWidth="0.0" />
+        </children>
+        <FlowPane.margin>
+            <Insets />
+        </FlowPane.margin>
+        <padding>
+            <Insets bottom="14.0" left="0.0" right="21.0" top="14.0" />
+        </padding>
+    </HBox>
+    <MenuBar fx:id="menuBar" />
+    <padding>
+        <Insets left="21.0" right="21.0" />
+    </padding>
+</fx:root>

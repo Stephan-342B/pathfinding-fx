@@ -1,41 +1,35 @@
-#cell {
+.cell {
   -fx-border-style: solid;
-  -fx-border-width: 1px;
-  -fx-stroke-borders: 1px;
+  -fx-border-width: 0.75px;
+  -fx-stroke-borders: 0.75px;
   -fx-border-color: -grid-border-color;
-  -fx-pref-width: 25;
-  -fx-pref-height: 25;
 
-  > .start {
+  &#start > .icon {
     -fx-image: url("/icons/triangletwo-right.png");
+
   }
 
-  > .target {
+  &#target > .icon {
     -fx-image: url("/icons/circle.png");
   }
 
-  &.wall {
+  &:wall {
     -fx-background-color: -wall-color;
     -fx-border-color: -wall-color;
   }
 
-  &.pointer {
+  &:pointer {
     -fx-background-color: -pointer-color!important;
     -fx-border-color: -pointer-color!important;;
   }
 
-  &.path {
+  &:path {
     -fx-background-color: -shortest-path-color;
     -fx-border-color: -shortest-path-color;
   }
 
-  &.visited {
+  &:visited {
     -fx-background-color: -visited-color!important;
     -fx-border-color: -visited-color!important;
-  }
-
-  &.unvisited {
-    -fx-background-color: -path-color;
-    -fx-border-color: -grid-border-color;
   }
 }

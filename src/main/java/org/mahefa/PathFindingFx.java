@@ -35,8 +35,10 @@ public class PathFindingFx extends Application {
 
         stage.setTitle("PathfindingFx");
         stage.setScene(scene);
-        stage.setMinWidth(800);
-        stage.setMinHeight(870);
+        stage.setMinWidth(810);
+        stage.setMinHeight(890);
+        stage.setWidth(810);
+        stage.setHeight(890);
         stage.setMaximized(false);
 
         this.stage = stage;
@@ -48,6 +50,7 @@ public class PathFindingFx extends Application {
         springContext = SpringApplication.run(PathFindingFx.class);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/MainWindow.fxml"));
         fxmlLoader.setControllerFactory(springContext::getBean);
+
         rootNode = fxmlLoader.load();
     }
 

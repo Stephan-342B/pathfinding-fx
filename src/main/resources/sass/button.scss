@@ -23,4 +23,9 @@
     -fx-font-weight: normal;
     //-fx-label-padding: 10px 15p 10px 15px;
   }
+
+  &:blocked {
+    -fx-background-color: -color-red;
+    -fx-cursor: WAIT;
+  }
 }

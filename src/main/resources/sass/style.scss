@@ -10,13 +10,26 @@
   font-style: normal;
   font-weight: 400;
   font-stretch: 100%;
-  src: url('../fonts/Lato/Lato-Regular.ttf');
+  src: url('../fonts/Lato/Lato-Regular.ttf') format('truetype');
 }
 
 @font-face {
   font-family: "Lato";
   font-weight: 700;
-  src: url('../fonts/Lato/Lato-Bold.ttf');
+  src: url('../fonts/Lato/Lato-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: "Lato", Bold Italic;
+  font-style: italic;
+  font-weight: bold;
+  src: url('../fonts/Lato/Lato-BoldItalic.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: "Lato";
+  font-style: italic;
+  src: url('../fonts/Lato/Lato-Italic.ttf') format('truetype');
 }
 
 .root * {
