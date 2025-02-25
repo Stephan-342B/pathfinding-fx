@@ -4,7 +4,7 @@
 PathfindingFx is a JavaFX version of the Pathfinding Visualizer originally created by Clément Mihailescu ([Link](https://clementmihailescu.github.io/Pathfinding-Visualizer/#)).. This project aims to provide a visual representation of various pathfinding algorithms, such as A* and Dijkstra, using the JavaFX framework.
 
 <p align="center">
-  <img src="https://drive.google.com/uc?export=view&id=1fguyuk6Ds-Lo9orGZcleSof0h1n8-Oxl" alt="Pathinding UI" />
+  <img src="https://drive.google.com/uc?export=view&id=1bxwzAqvTecWej6rEyR-ufc4qeeVmFZNu" alt="Pathinding UI" />
 </p>
 
 ## Features
