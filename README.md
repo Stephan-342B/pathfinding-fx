@@ -1,6 +1,19 @@
-# Pathfinding Visualizer with JavaFx (In development)
-The project is a JavaFx version of the Pathfinding Visualizer made by Clément Mihailescu ([Link](https://clementmihailescu.github.io/Pathfinding-Visualizer/#)).
+# PathfindingFx (In development)
+
+## Overview
+PathfindingFx is a JavaFX version of the Pathfinding Visualizer originally created by Clément Mihailescu ([Link](https://clementmihailescu.github.io/Pathfinding-Visualizer/#)).. This project aims to provide a visual representation of various pathfinding algorithms, such as A* and Aldous-Broder, using the JavaFX framework.
+
+## Features
+- Visualize various pathfinding algorithms
+- Interactive grid for setting start, end, and obstacle nodes
+- Adjustable speed for animations
+- Real-time updates and visual feedback
+
+## Installation
+1. Clone the repository:
+   ```sh
+   git clone git@github.com:yourusername/PathfindingFx.git
 
 <p align="center">
-  <img width="800" height="400" src="screenshots/Screenshot from 2023-07-31 23-46-40.png" />
+  <img src="https://drive.google.com/uc?export=view&id=1fguyuk6Ds-Lo9orGZcleSof0h1n8-Oxl" alt="Pathinding UI" />
 </p>
