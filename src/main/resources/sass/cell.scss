@@ -1,21 +1,15 @@
 .cell {
   -fx-border-style: solid;
-  -fx-border-width: 1px;
-  -fx-stroke-borders: 1px;
+  -fx-border-width: 0.75px;
+  -fx-stroke-borders: 0.75px;
   -fx-border-color: -grid-border-color;
-  -fx-pref-width: 25;
-  -fx-pref-height: 25;
 
-  &:unvisited {
-    -fx-background-color: -path-color;
-    -fx-border-color: -grid-border-color;
-  }
-
-  &:start > .icon {
+  &#start > .icon {
     -fx-image: url("/icons/triangletwo-right.png");
+
   }
 
-  &:target > .icon {
+  &#target > .icon {
     -fx-image: url("/icons/circle.png");
   }
 

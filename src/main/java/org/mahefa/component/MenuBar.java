@@ -4,7 +4,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
 
 import java.io.IOException;
 import java.net.URL;
@@ -15,7 +14,7 @@ import java.util.ResourceBundle;
 public class MenuBar extends FlowPane implements Initializable {
 
     @FXML
-    private HBox btnPlay;
+    private Button btnPlay;
 
     private List<Menu> menus = new LinkedList<>();
 
@@ -44,6 +43,10 @@ public class MenuBar extends FlowPane implements Initializable {
                 .filter(node -> node instanceof Menu)
                 .map(node -> (Menu) node)
                 .forEach(menu -> menus.add(menu));
+    }
+
+    public Button getBtnPlay() {
+        return btnPlay;
     }
 
     public List<Menu> getMenus() {

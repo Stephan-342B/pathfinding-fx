@@ -24,8 +24,14 @@
     -fx-icon-color: -hover-menu-color;
   }
 
+  &.blocked:hover > #label,
+  &.blocked:hover > .ikonli-font-icon {
+    -fx-fill: -color-red!important;
+    -fx-icon-color: -color-red!important;
+  }
+
   &.active > #label {
-    -fx-fill: -active-menu-color!important;
+    -fx-fill: -active-menu-color;
   }
 
   &.active-drop-down {
@@ -55,11 +61,19 @@
       -fx-font-weight: 400;
     }
 
-    &:hover, &:hover Text {
+    &:hover, &:hover Text,
+    &.blocked:hover, &.blocked:hover Text{
       -fx-fill: -color-white;
-      -fx-background-color: -hover-menu-color;
       -fx-background-radius: 4px;
       -fx-border-radius: 4px;
+    }
+
+    &:hover, &:hover Text{
+      -fx-background-color: -hover-menu-color;
+    }
+
+    &.blocked:hover, &.blocked:hover Text {
+      -fx-background-color: -color-red!important;
     }
   }
 }

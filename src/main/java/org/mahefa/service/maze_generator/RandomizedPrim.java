@@ -1,13 +1,12 @@
-package org.mahefa.service.algorithm.maze_generator;
+package org.mahefa.service.maze_generator;
 
-import org.mahefa.component.Grid;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RandomizedPrim extends MazeGenerator {
+public class RandomizedPrim /*extends MazeGenerator*/ {
 
-    @Override
-    public void generate(Grid grid) {
+//    @Override
+//    public void generate(Grid grid) {
 //
 //        Cell[][] cells = grid.getCells();
 //
@@ -53,5 +52,5 @@ public class RandomizedPrim extends MazeGenerator {
 //
 //            wallLocations.remove(location);
 //        }
-    }
+//    }
 }

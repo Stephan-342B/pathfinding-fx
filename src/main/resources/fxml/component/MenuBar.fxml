@@ -8,26 +8,23 @@
 <fx:root id="menuBar" type="javafx.scene.layout.FlowPane" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
     <Menu fx:id="menu_algorithms" text="Algorithms">
         <items>
-            <MenuItem fx:id="startButtonDijkstra" text="Dijkstra's Algorithm" weighted="true" guaranteeShortestPath="true" />
-            <MenuItem fx:id="startButtonAStar" text="A* Search" weighted="true" guaranteeShortestPath="true" />
-            <MenuItem fx:id="startButtonBFS" text="Breadth-first Search" weighted="false" guaranteeShortestPath="true" />
-            <MenuItem fx:id="startButtonDFS" text="Depth-first Search" weighted="false" guaranteeShortestPath="false" />
+            <MenuItem fx:id="DIJKSTRA" text="Dijkstra's Algorithm" weighted="true" guaranteeShortestPath="true" />
+            <MenuItem fx:id="A_STAR" text="A* Search" weighted="true" guaranteeShortestPath="true" />
+            <MenuItem fx:id="BREADTH_FIRST_SEARCH" text="Breadth-first Search" weighted="false" guaranteeShortestPath="true" />
+            <MenuItem fx:id="DEPTH_FIRST_SEARCH" text="Depth-first Search" weighted="false" guaranteeShortestPath="false" />
         </items>
     </Menu>
     <Menu fx:id="menu_mazes_patterns" text="Mazes &amp; Patterns">
         <items>
-            <MenuItem fx:id="startButtonAldousBroder" text="Aldous Broder's Algorithm" />
-            <MenuItem fx:id="startButtonPrim" text="Prim's algorithm" />
-            <MenuItem fx:id="startButtonRecursiveDivison" text="Recursive Division" />
-            <MenuItem fx:id="startButtonRecursiveDivisonV" text="Recursive Division (vertical skew)" />
-            <MenuItem fx:id="startButtonRecursiveDivisonH" text="Recursive Division (horizontal skew)" />
-            <MenuItem fx:id="startButtonRandom" text="Basic Random Maze" />
+            <MenuItem fx:id="ALDOUS_BRODER" text="Aldous Broder's Algorithm" />
+            <MenuItem fx:id="PRIM" text="Prim's algorithm" />
+            <MenuItem fx:id="RECURSIVE_DIVISION" text="Recursive Division" />
+            <MenuItem fx:id="RECURSIVE_DIVISION_VERT_SKEW" text="Recursive Division (vertical skew)" />
+            <MenuItem fx:id="RECURSIVE_DIVISION_HOZ_SKEW" text="Recursive Division (horizontal skew)" />
+            <MenuItem fx:id="BASIC_RANDOM" text="Basic Random Maze" />
         </items>
     </Menu>
-    <HBox fx:id="btnPlay" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="41.0" styleClass="btn-play">
-        <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Visualize!" />
-        </children>
+    <Button fx:id="btnPlay" text="Visualize!" styleClass="btn-play">
         <FlowPane.margin>
             <Insets bottom="0.0" left="20.0" right="20.0" top="0.0" />
         </FlowPane.margin>
@@ -37,15 +34,15 @@
         <HBox.margin>
             <Insets bottom="6.0" left="9.0" right="9.0" top="6.0" />
         </HBox.margin>
-    </HBox>
-    <Menu fx:id="menu_clear_board" text="Clear Board &amp; Patterns" />
+    </Button>
+    <Menu fx:id="menu_clear_board" text="Clear Board" />
     <Menu fx:id="menu_clear_walls_weights" text="Clear Walls &amp; Weights" />
     <Menu fx:id="menu_clear_path" text="Clear Path" />
-    <Menu fx:id="menu_speed" text="Speed">
+    <Menu fx:id="menu_speed" text="Speed" selectedItem="$FAST" lockable="false">
         <items>
-            <MenuItem fx:id="startButtonFast" text="Fast" />
-            <MenuItem fx:id="startButtonAverage" text="Average" />
-            <MenuItem fx:id="startButtonSlow" text="Slow" />
+            <MenuItem fx:id="FAST" text="Fast" />
+            <MenuItem fx:id="AVERAGE" text="Average" />
+            <MenuItem fx:id="SLOW" text="Slow" />
         </items>
     </Menu>
 </fx:root>

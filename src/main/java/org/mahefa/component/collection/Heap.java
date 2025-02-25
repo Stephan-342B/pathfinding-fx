@@ -1,4 +1,4 @@
-package org.mahefa.component.structure;
+package org.mahefa.component.collection;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,17 +6,17 @@ import java.util.List;
 
 public abstract class Heap<T> {
 
-    protected List<T> list;
+    protected List<T> data;
 
     public abstract void heapify(int index);
 
-    public void insert(T t) {
-        if(list == null)
-            list = new ArrayList<>();
+    public void add(T t) {
+        if(data == null)
+            data = new ArrayList<>();
 
-        list.add(t);
+        data.add(t);
 
-        final int size = list.size();
+        final int size = data.size();
 
         if(size > 1) {
             for(int i = (size / 2) - 1; i >= 0; i--) {
@@ -27,22 +27,22 @@ public abstract class Heap<T> {
 
     public void remove(T t) {
         if(!isEmpty()) {
-            int count = list.size();
+            int count = data.size();
             int i;
 
             for(i = 0; i < count; i++) {
-                if(t.equals(list.get(i)))
+                if(t.equals(data.get(i)))
                     break;
             }
 
             // Swap it with the last element
-            Collections.swap(list, count - 1, i);
+            Collections.swap(data, count - 1, i);
 
             // Remove the last element
-            list.remove(list.size() - 1);
+            data.remove(data.size() - 1);
 
             // Heapify
-            count = list.size();
+            count = data.size();
 
             if(!isEmpty()) {
                 for(int j = (count / 2) - 1; j >= 0; j--) {
@@ -53,16 +53,16 @@ public abstract class Heap<T> {
     }
 
     public T get() {
-        return list.get(0);
+        return data.get(0);
     }
 
     public boolean contains(T t) {
         if(!isEmpty()) {
-            if(t.equals(list.get(0)))
+            if(t.equals(data.get(0)))
                 return true;
 
-            for(int i = list.size() - 1; i >= 1; i--) {
-                if(t.equals(list.get(i)))
+            for(int i = data.size() - 1; i >= 1; i--) {
+                if(t.equals(data.get(i)))
                     return true;
             }
         }
@@ -71,6 +71,6 @@ public abstract class Heap<T> {
     }
 
     public boolean isEmpty() {
-        return list.isEmpty();
+        return data.isEmpty();
     }
 }

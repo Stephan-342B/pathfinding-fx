@@ -1,33 +1,42 @@
 package org.mahefa.component;
 
-public class Cost extends ComparableNode {
+import org.mahefa.common.enumerator.Direction;
 
-    // A* variables
-    private int f = 0;
-    private int g = 0;      // Cost of the path from the start node to n
-    private int h = 0;      // Heuristic function that estimates the cost of the cheapest path from n to the goal
+import java.util.List;
 
-    public int getF() {
-        return f;
+public class Cost {
+
+    private double value;
+    private List<Direction> actions;
+    private Direction currentDirection;
+
+    public Cost(double value, List<Direction> actions, Direction currentDirection) {
+        this.value = value;
+        this.actions = actions;
+        this.currentDirection = currentDirection;
     }
 
-    public void setF(int f) {
-        this.f = f;
+    public double getValue() {
+        return value;
     }
 
-    public int getG() {
-        return g;
+    public void setValue(double value) {
+        this.value = value;
     }
 
-    public void setG(int g) {
-        this.g = g;
+    public List<Direction> getActions() {
+        return actions;
     }
 
-    public int getH() {
-        return h;
+    public void setActions(List<Direction> actions) {
+        this.actions = actions;
     }
 
-    public void setH(int h) {
-        this.h = h;
+    public Direction getCurrentDirection() {
+        return currentDirection;
+    }
+
+    public void setCurrentDirection(Direction currentDirection) {
+        this.currentDirection = currentDirection;
     }
 }

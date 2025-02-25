@@ -6,38 +6,24 @@ import java.util.Objects;
 
 public class Location {
 
-    private int x;
-    private int y;
+    private int row;
+    private int col;
 
-    public Location() {}
-
-    public Location(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Location(int row, int col) {
+        this.row = row;
+        this.col = col;
     }
 
-    public int getX() {
-        return x;
+    public int getRow() {
+        return row;
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
+    public int getCol() {
+        return col;
     }
 
     public Location move(Direction direction) {
-        return new Location(this.x + direction.getX(), this.y + direction.getY());
-    }
-
-    public static Location first() {
-        return new Location(0, 0);
+        return new Location(this.row + direction.getX(), this.col + direction.getY());
     }
 
     @Override
@@ -45,12 +31,12 @@ public class Location {
         if (this == o) return true;
         if (!(o instanceof Location)) return false;
         Location location = (Location) o;
-        return getX() == location.getX() &&
-                getY() == location.getY();
+        return getRow() == location.getRow() &&
+                getCol() == location.getCol();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getX(), getY());
+        return Objects.hash(getRow(), getCol());
     }
 }
