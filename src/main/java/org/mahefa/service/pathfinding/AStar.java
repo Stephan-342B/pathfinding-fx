@@ -51,7 +51,6 @@ public class AStar extends Solver {
 
             @Override
             public void stop() {
-                setIsRunning(false);
                 super.stop();
             }
 
@@ -122,6 +121,7 @@ public class AStar extends Solver {
                         currentCell.setFlag(Flag.VISITED);
                     } else {
                         stop();
+                        setIsRunning(false);
                     }
 
                     lastToggle = now;
@@ -163,6 +163,7 @@ public class AStar extends Solver {
 
                         i++;
                         if (i == path.size()) {
+                            setIsRunning(false);
                             super.stop();
                         } else {
                             currentCell = path.get(i);
