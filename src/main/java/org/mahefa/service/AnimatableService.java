@@ -6,17 +6,17 @@ import javafx.animation.Timeline;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.util.Duration;
-import org.mahefa.common.enumerator.AnimationSpeed;
 import org.mahefa.common.enumerator.ServiceState;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 public  class AnimatableService {
 
     private Timeline timeline;
     private AnimationTimer animationTimer;
 
-    protected ObjectProperty<AnimationSpeed> currentSpeed = new SimpleObjectProperty<>();
+    protected ObjectProperty<Long> currentSpeed = new SimpleObjectProperty<>();
     private ObjectProperty<ServiceState> currentState = new SimpleObjectProperty<>(ServiceState.IDLE);
 
     public AnimatableService() {
@@ -33,7 +33,7 @@ public  class AnimatableService {
         });
     }
 
-    public synchronized void run(AnimationTimer currentAnimationTimer) {
+    public synchronized void run(Supplier<AnimationTimer> animationTimerSupplier) {
         currentState.setValue(ServiceState.RUNNING);
 
         String[] dots = { "", ".", "..", "..." };
@@ -50,8 +50,8 @@ public  class AnimatableService {
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
 
-        currentAnimationTimer.start();
-        animationTimer = currentAnimationTimer;
+        animationTimer = animationTimerSupplier.get();
+        animationTimer.start();
     }
 
     public synchronized boolean isRunning() {
@@ -70,7 +70,7 @@ public  class AnimatableService {
         this.currentState.set(currentState);
     }
 
-    public void updateSpeed(AnimationSpeed speed) {
+    public void updateSpeed(Long speed) {
         this.currentSpeed.setValue(speed);
     }
 

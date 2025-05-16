@@ -1,8 +1,13 @@
 package org.mahefa.service.pathfinding;
 
 import javafx.animation.AnimationTimer;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.mahefa.common.enumerator.Direction;
+import org.mahefa.common.enumerator.LaunchAnimationSpeed;
+import org.mahefa.common.enumerator.NodeType;
 import org.mahefa.common.utils.GridUtils;
+import org.mahefa.common.utils.ImageUtils;
 import org.mahefa.component.*;
 import org.mahefa.component.collection.Heap;
 import org.mahefa.component.collection.MinHeap;
@@ -10,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 import static org.mahefa.common.CellStyle.Flag;
 
@@ -22,8 +28,8 @@ public class AStar extends Solver {
     }
 
     @Override
-    public AnimationTimer solve() {
-        return new AnimationTimer() {
+    public Supplier<AnimationTimer> solve() {
+        return () -> new AnimationTimer() {
 
             private Cell currentCell, targetCell;
             private Heap<RouteNode> openSet;
@@ -31,11 +37,11 @@ public class AStar extends Solver {
 
             @Override
             public void start() {
-                lastToggle = 0;
                 openSet = new MinHeap<>();
                 closedSet = new HashSet<>(0);
                 targetCell = grid.getTargetCell();
                 nodes = new HashMap<>(0);
+                lastToggle = 0;
 
                 // Add start node in the open set
                 RouteNode start = new RouteNode(
@@ -50,78 +56,77 @@ public class AStar extends Solver {
             }
 
             @Override
-            public void stop() {
-                super.stop();
-            }
-
-            @Override
             public void handle(long now) {
                 if ((now - lastToggle) >= currentSpeed) {
                     if (!openSet.isEmpty()) {
-                        // Get cell having the lowest f score value
-                        currentRouteNode = openSet.get();
-                        currentCell = currentRouteNode.getCurrent();
-                        currentCell.setFlag(Flag.POINTER);
+                        if (currentCell == null) {
+                            // Get cell having the lowest f score value
+                            currentRouteNode = openSet.get();
+                            currentCell = currentRouteNode.getCurrent();
+                            currentCell.setFlag(Flag.CURRENT);
+                        } else {
 
-                        LOGGER.debug(
-                                "Row: {} Col: {} [F: {}, G: {}, H: {}]",
-                                currentCell.getLocation().getRow(), currentCell.getLocation().getCol(),
-                                currentRouteNode.getF(), currentRouteNode.getG(), currentRouteNode.getH()
-                        );
+                            LOGGER.debug(
+                                    "Row: {} Col: {} [F: {}, G: {}, H: {}]",
+                                    currentCell.getLocation().getRow(), currentCell.getLocation().getCol(),
+                                    currentRouteNode.getF(), currentRouteNode.getG(), currentRouteNode.getH()
+                            );
 
-                        // Target reached
-                        if (currentCell.equals(targetCell)) {
-                            drawback().start();
-                            stop();
-                        }
+                            // Target reached
+                            if (currentCell.equals(targetCell)) {
+                                drawback().start();
+                                super.stop();
+                            }
 
-                        openSet.remove(currentRouteNode);
-                        closedSet.add(currentCell);
+                            openSet.remove(currentRouteNode);
+                            closedSet.add(currentCell);
 
-                        List<Cell> neighbors = GridUtils.getNeighbors(grid, currentCell);
-                        Iterator<Cell> iterator = neighbors.iterator();
+                            List<Cell> neighbors = GridUtils.getNeighbors(grid, currentCell);
+                            Iterator<Cell> iterator = neighbors.iterator();
 
-                        while (iterator.hasNext()) {
-                            Cell neighbor = iterator.next();
-                            Flag neighborFlag = neighbor.getFlag();
+                            while (iterator.hasNext()) {
+                                Cell neighbor = iterator.next();
+                                Flag neighborFlag = neighbor.getFlag();
 
-                            // Skip if neighbor is a wall or already in the closedSet
-                            if (neighborFlag.equals(Flag.WALL_NODE) || closedSet.contains(neighbor))
-                                continue;
+                                // Skip if neighbor is a wall or already in the closedSet
+                                if (neighborFlag.equals(Flag.WALL_NODE) || closedSet.contains(neighbor))
+                                    continue;
 
-                            RouteNode neighborRouteNode = nodes.getOrDefault(neighbor, new RouteNode(neighbor));
-                            nodes.put(neighbor, neighborRouteNode);
+                                RouteNode neighborRouteNode = nodes.getOrDefault(neighbor, new RouteNode(neighbor));
+                                nodes.put(neighbor, neighborRouteNode);
 
-                            /**
-                             * d(current, neighbor) is the weight of the edge from current to neighbor
-                             * tentativeGScore is the distance from start to the neighbor through current
-                             * Uniform grid: d(current, neighbor) = 1
-                             *
-                             * Breaking ties: Adjust the G value based on the cost of moving to another tile
-                             */
-                            Cost cost = GridUtils.getCost(currentCell, neighbor, currentRouteNode.getDirection());
-                            double tentativeGScore = currentRouteNode.getG() + neighbor.getWeight() + cost.getValue();
+                                /**
+                                 * d(current, neighbor) is the weight of the edge from current to neighbor
+                                 * tentativeGScore is the distance from start to the neighbor through current
+                                 * Uniform grid: d(current, neighbor) = 1
+                                 *
+                                 * Breaking ties: Adjust the G value based on the cost of moving to another tile
+                                 */
+                                Cost cost = GridUtils.getCost(currentCell, neighbor, currentRouteNode.getDirection());
+                                double tentativeGScore = currentRouteNode.getG() + neighbor.getWeight() + cost.getValue();
 
-                            // This path to neighbor is better than any previous one
-                            if (tentativeGScore < neighborRouteNode.getG()) {
-                                neighborRouteNode.setG(tentativeGScore);
-                                neighborRouteNode.setH(distance(neighbor, targetCell));
-                                neighborRouteNode.setF(tentativeGScore + neighborRouteNode.getH());
-                                neighborRouteNode.setPrevious(currentCell);
-                                neighborRouteNode.setActions(cost.getActions());
-                                neighborRouteNode.setDirection(cost.getCurrentDirection());
+                                // This path to neighbor is better than any previous one
+                                if (tentativeGScore < neighborRouteNode.getG()) {
+                                    neighborRouteNode.setG(tentativeGScore);
+                                    neighborRouteNode.setH(distance(neighbor, targetCell));
+                                    neighborRouteNode.setF(tentativeGScore + neighborRouteNode.getH());
+                                    neighborRouteNode.setPrevious(currentCell);
+                                    neighborRouteNode.setMoves(cost.getMoves());
+                                    neighborRouteNode.setDirection(cost.getCurrentDirection());
 
-                                if (!openSet.contains(neighborRouteNode)) {
-                                    openSet.add(neighborRouteNode);
+                                    if (!openSet.contains(neighborRouteNode)) {
+                                        openSet.add(neighborRouteNode);
+                                    }
                                 }
                             }
-                        }
 
-                        currentCell.revertFlag();
-                        currentCell.setFlag(Flag.VISITED);
+                            currentCell.revertFlag();
+                            currentCell.setFlag(Flag.VISITED);
+                            currentCell = null;
+                        }
                     } else {
-                        stop();
                         setIsRunning(false);
+                        super.stop();
                     }
 
                     lastToggle = now;
@@ -130,47 +135,74 @@ public class AStar extends Solver {
         };
     }
 
-    @Override
-    public AnimationTimer drawback() {
+    private AnimationTimer drawback() {
         return new AnimationTimer() {
 
-            private Cell currentCell;
-            private List<Cell> path = new ArrayList<>();
+            private Cell currentCell, priorCell;
+            private ImageView currentImageView;
+            private double currentAngle;
+
+            private List<Cell> shortestPath = new ArrayList<>();
             private int i;
 
             @Override
             public void start() {
                 i = 0;
+                currentAngle = 0d;
                 RouteNode node = currentRouteNode;
 
                 while (node != null) {
-                    path.add(node.getCurrent());
+                    shortestPath.add(node.getCurrent());
                     node = nodes.get(node.getPrevious());
                 }
 
                 // Reverse to get the path from start to target
-                Collections.reverse(path);
-                currentCell = path.get(0);
+                Collections.reverse(shortestPath);
+
+                // Get current cell
+                currentCell = shortestPath.get(0);
+                currentCell.getStyleClass().add("transparent");
+
+                // Define current image
+                ImageView imageView = (ImageView) currentCell.getChildren().get(0);
+                currentImageView = new ImageView(imageView.getImage());
+                currentImageView.setImage(new Image("/icons/triangletwo-up.png"));
 
                 super.start();
             }
 
             @Override
             public void handle(long now) {
-                if ((now - lastToggle) >= currentSpeed) {
-                    if (currentCell != null) {
-                        currentCell.setFlag(Flag.POINTER);
+                if ((now - lastToggle) >= LaunchAnimationSpeed.SHORTEST_PATH.getInterval()) {
+                    RouteNode currentRouteNode = nodes.get(currentCell);
 
-                        i++;
-                        if (i == path.size()) {
-                            setIsRunning(false);
-                            super.stop();
-                        } else {
-                            currentCell = path.get(i);
-                        }
+                    // Get rotation angle
+                    currentAngle += ImageUtils.getRotationAngle(currentRouteNode.getMoves());
+
+                    if (priorCell != null && priorCell.getNodeType().equals(NodeType.NONE))
+                        priorCell.getChildren().remove(0);
+
+                    currentImageView.setRotate(currentAngle);
+                    currentCell.setFlag(Flag.SHORTEST_PATH_NODE);
+
+                    if (currentCell.getNodeType().equals(NodeType.TARGET)) {
+                        ImageView imageView = (ImageView) currentCell.getChildren().get(0);
+                        imageView.setImage(currentImageView.getImage());
+                        imageView.setRotate(currentAngle);
+                    } else {
+                        if (!currentCell.isSpecialNode())
+                            currentCell.getChildren().add(currentImageView);
                     }
 
-                    lastToggle = now;
+                    if (++i == shortestPath.size()) {
+                        setIsRunning(false);
+                        super.stop();
+                    } else {
+                        priorCell = currentCell;
+                        currentCell = shortestPath.get(i);
+
+                        lastToggle = now;
+                    }
                 }
             }
         };

@@ -1,12 +1,27 @@
 .cell {
   -fx-border-style: solid;
-  -fx-border-width: 0.75px;
-  -fx-stroke-borders: 0.75px;
+  -fx-border-width: 1px;
   -fx-border-color: -grid-border-color;
+
+  #tile {
+    -fx-border-style: none;
+    -fx-border-width: 0;
+    -fx-border-color: transparent;
+  }
+
+  &#start > .icon, &#target > .icon {
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: contain;
+  }
+
+  &#start.transparent {
+    -fx-opacity: 0.5;
+    -fx-background-color: -shortest-path-color!important;
+  }
 
   &#start > .icon {
     -fx-image: url("/icons/triangletwo-right.png");
-
   }
 
   &#target > .icon {
@@ -18,18 +33,17 @@
     -fx-border-color: -wall-color;
   }
 
-  &:pointer {
-    -fx-background-color: -pointer-color!important;
-    -fx-border-color: -pointer-color!important;;
+  &:current {
+    -fx-background-color: -pointer-color;
   }
 
-  &:path {
-    -fx-background-color: -shortest-path-color;
-    -fx-border-color: -shortest-path-color;
+  &:shortest-path {
+    -fx-background-color: -shortest-path-color!important;
+    -fx-border-color: -shortest-path-color!important;
   }
 
   &:visited {
-    -fx-background-color: -visited-color!important;
-    -fx-border-color: -visited-color!important;
+    //-fx-border-color: transparent;
+    -fx-border-color: -visited-color;
   }
 }

@@ -6,6 +6,8 @@ import org.mahefa.component.Grid;
 import org.mahefa.component.Location;
 import org.mahefa.service.State;
 
+import java.util.function.Supplier;
+
 public abstract class MazeGenerator extends State {
 
     protected Grid grid;
@@ -19,7 +21,7 @@ public abstract class MazeGenerator extends State {
         this.visited = new boolean[grid.getRowLen()][grid.getColLen()];
     }
 
-    public abstract AnimationTimer build();
+    public abstract Supplier<AnimationTimer> build();
 
     public boolean isAlreadyVisited(Cell cell) {
         Location location = cell.getLocation();

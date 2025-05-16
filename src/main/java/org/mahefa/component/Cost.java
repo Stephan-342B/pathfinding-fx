@@ -1,18 +1,19 @@
 package org.mahefa.component;
 
 import org.mahefa.common.enumerator.Direction;
+import org.mahefa.common.enumerator.Rotate;
 
 import java.util.List;
 
 public class Cost {
 
     private double value;
-    private List<Direction> actions;
+    private List<Rotate> moves;
     private Direction currentDirection;
 
-    public Cost(double value, List<Direction> actions, Direction currentDirection) {
+    public Cost(double value, List<Rotate> moves, Direction currentDirection) {
         this.value = value;
-        this.actions = actions;
+        this.moves = moves;
         this.currentDirection = currentDirection;
     }
 
@@ -24,12 +25,12 @@ public class Cost {
         this.value = value;
     }
 
-    public List<Direction> getActions() {
-        return actions;
+    public List<Rotate> getMoves() {
+        return moves;
     }
 
-    public void setActions(List<Direction> actions) {
-        this.actions = actions;
+    public void setMoves(List<Rotate> moves) {
+        this.moves = moves;
     }
 
     public Direction getCurrentDirection() {

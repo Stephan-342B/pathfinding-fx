@@ -4,6 +4,8 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import org.mahefa.common.enumerator.AnimationSpeed;
+import org.mahefa.common.enumerator.MazeGenerationAnimationSpeed;
+import org.mahefa.common.enumerator.LaunchAnimationSpeed;
 import org.mahefa.common.enumerator.ServiceState;
 import org.mahefa.component.Grid;
 import org.slf4j.Logger;
@@ -64,27 +66,32 @@ public class GridService {
     }
 
     public void updateSpeed(AnimationSpeed currentSpeed) {
-        getMazeService().updateSpeed(currentSpeed);
-        getRouteFinderService().updateSpeed(currentSpeed);
+        getMazeService().updateSpeed(MazeGenerationAnimationSpeed.valueOf(currentSpeed.name()).getInterval());
+        getRouteFinderService().updateSpeed(LaunchAnimationSpeed.valueOf(currentSpeed.name()).getInterval());
     }
 
     public void clearBoard() {
-        clear(true);
+        clear(true, true);
         LOGGER.debug("Board cleared");
     }
 
-    public void clearPath() {
-        clear(false);
+    public void clearWallWeight() {
+        clear(false, true);
         LOGGER.debug("Path cleared");
     }
 
-    private void clear(boolean reset) {
+    public void clearPath() {
+        clear(false, false);
+        LOGGER.debug("Path cleared");
+    }
+
+    private void clear(boolean reset, boolean removeWalls) {
         mazeService.currentStateProperty().setValue(ServiceState.STOPPING);
         routeFinderService.currentStateProperty().setValue(ServiceState.STOPPING);
 
         if (grid != null) {
             grid.setDefaultFlag(NONE);
-            grid.clear(reset, reset);
+            grid.clear(reset, removeWalls, reset);
         }
     }
 }

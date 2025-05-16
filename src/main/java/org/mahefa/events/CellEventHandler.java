@@ -1,7 +1,5 @@
 package org.mahefa.events;
 
-import animatefx.animation.ZoomIn;
-import animatefx.animation.ZoomOut;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
@@ -12,6 +10,7 @@ import org.mahefa.common.enumerator.NodeType;
 import org.mahefa.component.Cell;
 
 import static org.mahefa.common.CellStyle.Flag;
+import static org.mahefa.common.animations.CellAnimation.SPECIAL_NODES_ANIMATION;
 
 public class CellEventHandler implements EventHandler<Event> {
 
@@ -80,7 +79,6 @@ public class CellEventHandler implements EventHandler<Event> {
             dragThumbnailView.setPreserveRatio(true);
             dragboard.setDragView(dragThumbnailView.snapshot(null, null));
 
-            new ZoomOut(currentImageView).play();
             currentImageView.visibleProperty().setValue(false);
             currentCell.revertFlag();
         } catch (Exception e) {
@@ -108,10 +106,10 @@ public class CellEventHandler implements EventHandler<Event> {
 
         if (dragboard.hasString() && sourceNode instanceof Pane) {
             // There is already an image inside the current tile, so we need to keep them unchanged
-            if (!targetNode.getNodeType().equals(NodeType.NONE)) {
+            if (targetNode.isSpecialNode()) {
                 ImageView imageView = (ImageView) sourceNode.getChildren().get(0);
                 imageView.visibleProperty().setValue(true);
-                new ZoomIn(imageView).play();
+                SPECIAL_NODES_ANIMATION.build(imageView).play();
             } else {
                 targetNode.setNodeType(sourceNode.getNodeType());
             }
@@ -122,17 +120,13 @@ public class CellEventHandler implements EventHandler<Event> {
     }
 
     private void setWallNode(Cell currentCell) {
-        NodeType nodeType = currentCell.getNodeType();
-
-        if (nodeType.equals(NodeType.NONE)) {
+        if (!currentCell.isSpecialNode()) {
             Flag currentFlag = currentCell.getFlag();
 
             if (!currentFlag.equals(Flag.WALL_NODE)) {
                 currentCell.setFlag(Flag.WALL_NODE);
             } else {
-                if (!currentCell.revertFlag()) {
-                    currentCell.setFlag(Flag.NONE);
-                }
+                currentCell.revertFlag();
             }
         }
     }

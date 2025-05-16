@@ -1,6 +1,5 @@
 package org.mahefa.controller;
 
-import animatefx.animation.ZoomIn;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -26,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import static org.mahefa.common.StateStyle.State;
+import static org.mahefa.common.animations.CellAnimation.*;
 
 @Component
 public class MainWindowController {
@@ -153,9 +153,9 @@ public class MainWindowController {
 
         // Create a grid
         Grid grid = new Grid(width + defaultPadding, height + defaultPadding, gridSize, (currentCell) -> {
-            NodeType currentNodeType = currentCell.getNodeType();
+            if (currentCell.isSpecialNode()) {
+                NodeType currentNodeType = currentCell.getNodeType();
 
-            if (!currentNodeType.equals(NodeType.NONE)) {
                 ImageView imageView = new ImageView();
                 imageView.setFitWidth(currentCell.getPrefWidth());
                 imageView.setFitHeight(currentCell.getPrefHeight());
@@ -168,7 +168,7 @@ public class MainWindowController {
 
                 imageView.managedProperty().bind(imageView.visibleProperty());
 
-                new ZoomIn(imageView).play();
+                SPECIAL_NODES_ANIMATION.build(imageView).play();
             }
 
             gridPane.getChildren().add(currentCell);
@@ -241,10 +241,28 @@ public class MainWindowController {
                 gridService.getGrid().setTargetCell(cell);
             }
         });
+
+        cell.flagProperty().addListener((observable, oldValue, newValue) -> {
+            switch (newValue) {
+                case WALL_NODE:
+                    WALL_ANIMATION.build(cell).play();
+                    break;
+//                case CURRENT:
+                case VISITED:
+                    VISITED_ANIMATION.build(cell).play();
+                    break;
+                case SHORTEST_PATH_NODE:
+                    SHORTEST_PATH_ANIMATION.build(cell).play();
+                default:
+                    cell.setBackground(null);
+                    break;
+            }
+        });
     }
 
     private void switchNodeType(Cell newCell, Cell currentCell) {
         String cssId = currentCell.getId();
+        NodeType currentNodeType = currentCell.getNodeType();
         Node currentImageView = currentCell.getChildren().remove(0);
 
         // Turn on visibility
@@ -254,9 +272,10 @@ public class MainWindowController {
         currentCell.setId(null);
         newCell.setId(cssId);
         newCell.setFlag(Flag.NONE);
+        newCell.setNodeType(currentNodeType);
         newCell.getChildren().add(currentImageView);
 
-        new ZoomIn(currentImageView).play();
+        SPECIAL_NODES_ANIMATION.build(currentImageView).play();
     }
 
     private void updateSpeed(Menu parent, MenuItem currentMenuItem) {
@@ -331,13 +350,13 @@ public class MainWindowController {
     private void menuAction(Menu currentMenu) {
         switch (currentMenu.getId()) {
             case "menu_clear_board":
-                clearBoard();
+                gridService.clearBoard();
                 break;
             case "menu_clear_walls_weights":
-                // TODO
+                gridService.clearWallWeight();
                 break;
             case "menu_clear_path":
-                clearPath();
+                gridService.clearPath();
                 break;
             default:
                 break;
@@ -359,13 +378,5 @@ public class MainWindowController {
 
             gridService.setCurrentState(ServiceState.FAILED);
         }
-    }
-
-    private void clearBoard() {
-        gridService.clearBoard();
-    }
-
-    private void clearPath() {
-        gridService.clearPath();
     }
 }

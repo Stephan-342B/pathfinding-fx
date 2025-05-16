@@ -2,6 +2,8 @@ package org.mahefa.component;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.mahefa.common.enumerator.NodeType;
 
 import java.util.function.Consumer;
@@ -137,7 +139,7 @@ public class Grid {
         this.defaultFlag = defaultFlag;
     }
 
-    public void clear(boolean resetBoard, boolean resetNodePosition) {
+    public void clear(boolean resetBoard, boolean removeWalls, boolean resetNodePosition) {
         for (int r = 0; r < rowLen; r++) {
             for (int c = 0; c < colLen; c++) {
                 Cell currentCell = getCellAt(r, c);
@@ -148,8 +150,10 @@ public class Grid {
                     currentCell.resetFlag(defaultFlag);
                 } else {
                     if (currentFlag != null) {
-                        if (currentFlag.equals(POINTER) || currentFlag.equals(VISITED) || currentFlag.equals(PATH_NODE))
-                            currentCell.resetFlag(defaultFlag);
+                        if (currentFlag.equals(CURRENT) || currentFlag.equals(VISITED) || currentFlag.equals(SHORTEST_PATH_NODE)
+                                || (removeWalls && currentFlag.equals(WALL_NODE))) {
+                            currentCell.resetFlag((defaultFlag.equals(WALL_NODE) ? NONE : defaultFlag));
+                        }
                     }
                 }
             }
@@ -160,5 +164,12 @@ public class Grid {
             setStartCell(getCellAt(startRow, startCol));
             setTargetCell(getCellAt(targetRow, targetCol));
         }
+
+        getStartCell().getStyleClass().remove("transparent");
+
+        // Reset image
+        ImageView imageView = (ImageView) getTargetCell().getChildren().get(0);
+        imageView.setImage(new Image("/icons/circle.png"));
     }
 }
+

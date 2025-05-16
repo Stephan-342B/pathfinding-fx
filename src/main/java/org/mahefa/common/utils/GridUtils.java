@@ -1,6 +1,7 @@
 package org.mahefa.common.utils;
 
 import org.mahefa.common.enumerator.Direction;
+import org.mahefa.common.enumerator.Rotate;
 import org.mahefa.component.*;
 
 import java.util.*;
@@ -96,45 +97,45 @@ public final class GridUtils {
 
         if (row2 < row1 && col1 == col2) {
             if (currentDirection.equals(Direction.UP)) {
-                return new Cost(1, Arrays.asList(Direction.FORWARD), Direction.UP);
+                return new Cost(1, Arrays.asList(Rotate.FORWARD), Direction.UP);
             } else if (currentDirection.equals(Direction.RIGHT)) {
-                return new Cost(2, Arrays.asList(Direction.LEFT, Direction.FORWARD), Direction.UP);
+                return new Cost(2, Arrays.asList(Rotate.LEFT, Rotate.FORWARD), Direction.UP);
             } else if (currentDirection.equals(Direction.LEFT)) {
-                return new Cost(2, Arrays.asList(Direction.RIGHT, Direction.FORWARD), Direction.UP);
+                return new Cost(2, Arrays.asList(Rotate.RIGHT, Rotate.FORWARD), Direction.UP);
             } else if (currentDirection.equals(Direction.DOWN)) {
-                return new Cost(3, Arrays.asList(Direction.RIGHT, Direction.RIGHT, Direction.FORWARD), Direction.UP);
+                return new Cost(3, Arrays.asList(Rotate.RIGHT, Rotate.RIGHT, Rotate.FORWARD), Direction.UP);
             }
         } else if (row2 > row1 && col1 == col2) {
             if (currentDirection.equals(Direction.UP)) {
-                return new Cost(3, Arrays.asList(Direction.RIGHT, Direction.RIGHT, Direction.FORWARD), Direction.DOWN);
+                return new Cost(3, Arrays.asList(Rotate.RIGHT, Rotate.RIGHT, Rotate.FORWARD), Direction.DOWN);
             } else if (currentDirection.equals(Direction.RIGHT)) {
-                return new Cost(2, Arrays.asList(Direction.RIGHT, Direction.FORWARD), Direction.DOWN);
+                return new Cost(2, Arrays.asList(Rotate.RIGHT, Rotate.FORWARD), Direction.DOWN);
             } else if (currentDirection.equals(Direction.LEFT)) {
-                return new Cost(2, Arrays.asList(Direction.LEFT, Direction.FORWARD), Direction.DOWN);
+                return new Cost(2, Arrays.asList(Rotate.LEFT, Rotate.FORWARD), Direction.DOWN);
             } else if (currentDirection.equals(Direction.DOWN)) {
-                return new Cost(1, Arrays.asList(Direction.FORWARD), Direction.DOWN);
+                return new Cost(1, Arrays.asList(Rotate.FORWARD), Direction.DOWN);
             }
         }
 
         if (col2 < col1 && row1 == row2) {
             if (currentDirection.equals(Direction.UP)) {
-                return new Cost(2, Arrays.asList(Direction.LEFT, Direction.FORWARD), Direction.LEFT);
+                return new Cost(2, Arrays.asList(Rotate.LEFT, Rotate.FORWARD), Direction.LEFT);
             } else if (currentDirection.equals(Direction.RIGHT)) {
-                return new Cost(3, Arrays.asList(Direction.LEFT, Direction.LEFT, Direction.FORWARD), Direction.LEFT);
+                return new Cost(3, Arrays.asList(Rotate.LEFT, Rotate.LEFT, Rotate.FORWARD), Direction.LEFT);
             } else if (currentDirection.equals(Direction.LEFT)) {
-                return new Cost(1, Arrays.asList(Direction.FORWARD), Direction.LEFT);
+                return new Cost(1, Arrays.asList(Rotate.FORWARD), Direction.LEFT);
             } else if (currentDirection.equals(Direction.DOWN)) {
-                return new Cost(2, Arrays.asList(Direction.RIGHT, Direction.FORWARD), Direction.LEFT);
+                return new Cost(2, Arrays.asList(Rotate.RIGHT, Rotate.FORWARD), Direction.LEFT);
             }
         } else if (col2 > col1 && row1 == row2) {
             if (currentDirection.equals(Direction.UP)) {
-                return new Cost(2, Arrays.asList(Direction.RIGHT, Direction.FORWARD), Direction.RIGHT);
+                return new Cost(2, Arrays.asList(Rotate.RIGHT, Rotate.FORWARD), Direction.RIGHT);
             } else if (currentDirection.equals(Direction.RIGHT)) {
-                return new Cost(1, Arrays.asList(Direction.FORWARD), Direction.RIGHT);
+                return new Cost(1, Arrays.asList(Rotate.FORWARD), Direction.RIGHT);
             } else if (currentDirection.equals(Direction.LEFT)) {
-                return new Cost(3, Arrays.asList(Direction.RIGHT, Direction.RIGHT, Direction.FORWARD), Direction.RIGHT);
+                return new Cost(3, Arrays.asList(Rotate.RIGHT, Rotate.RIGHT, Rotate.FORWARD), Direction.RIGHT);
             } else if (currentDirection.equals(Direction.DOWN)) {
-                return new Cost(2, Arrays.asList(Direction.LEFT, Direction.FORWARD), Direction.RIGHT);
+                return new Cost(2, Arrays.asList(Rotate.LEFT, Rotate.FORWARD), Direction.RIGHT);
             }
         }
 

@@ -22,19 +22,19 @@ public class Cell extends Pane {
         @Override
         public void invalidated() {
             pseudoClassStateChanged(WALL_NODE_PSEUDO_CLASS, false);
-            pseudoClassStateChanged(POINTER_PSEUDO_CLASS, false);
-            pseudoClassStateChanged(PATH_NODE_PSEUDO_CLASS, false);
+            pseudoClassStateChanged(CURRENT_PSEUDO_CLASS, false);
+            pseudoClassStateChanged(SHORTEST_PATH_NODE_PSEUDO_CLASS, false);
             pseudoClassStateChanged(VISITED_PSEUDO_CLASS, false);
 
             switch (get()) {
                 case WALL_NODE:
                     pseudoClassStateChanged(WALL_NODE_PSEUDO_CLASS, true);
                     break;
-                case POINTER:
-                    pseudoClassStateChanged(POINTER_PSEUDO_CLASS, true);
+                case CURRENT:
+                    pseudoClassStateChanged(CURRENT_PSEUDO_CLASS, true);
                     break;
-                case PATH_NODE:
-                    pseudoClassStateChanged(PATH_NODE_PSEUDO_CLASS, true);
+                case SHORTEST_PATH_NODE:
+                    pseudoClassStateChanged(SHORTEST_PATH_NODE_PSEUDO_CLASS, true);
                     break;
                 case VISITED:
                     pseudoClassStateChanged(VISITED_PSEUDO_CLASS, true);
@@ -84,6 +84,10 @@ public class Cell extends Pane {
         return flag.get();
     }
 
+    public ObjectProperty<Flag> flagProperty() {
+        return flag;
+    }
+
     public void setFlag(Flag flag) {
         Flag currentFlag = this.flag.get();
 
@@ -115,6 +119,10 @@ public class Cell extends Pane {
 
     public void setWeight(int weight) {
         this.weight = weight;
+    }
+
+    public boolean isSpecialNode() {
+        return !NodeType.NONE.equals(nodeType.get());
     }
 
     @Override

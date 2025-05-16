@@ -1,6 +1,7 @@
 package org.mahefa.component;
 
 import org.mahefa.common.enumerator.Direction;
+import org.mahefa.common.enumerator.Rotate;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ public class RouteNode implements Comparable<RouteNode> {
     private Cell current;
     private Cell previous;
     private Direction direction;
-    private List<Direction> actions;
+    private List<Rotate> moves;
 
     // A* variables
     private double g;      // Cost of the path from the start node to n
@@ -50,12 +51,12 @@ public class RouteNode implements Comparable<RouteNode> {
         this.direction = direction;
     }
 
-    public List<Direction> getActions() {
-        return actions;
+    public List<Rotate> getMoves() {
+        return moves;
     }
 
-    public void setActions(List<Direction> actions) {
-        this.actions = actions;
+    public void setMoves(List<Rotate> moves) {
+        this.moves = moves;
     }
 
     public double getG() {

@@ -26,7 +26,7 @@ public class RouteFinderService extends AnimatableService {
     public void init() {
         currentSpeed.addListener((observableValue, animationSpeed, t1) -> {
             if (solver != null) {
-                solver.setCurrentSpeed(t1.getInterval());
+                solver.setCurrentSpeed(t1);
             }
         });
     }
@@ -65,8 +65,8 @@ public class RouteFinderService extends AnimatableService {
 
         if (solver != null) {
             currentStateProperty().setValue(ServiceState.STARTING);
-            grid.clear(false, false);
-            solver.setCurrentSpeed(currentSpeed.get().getInterval());
+            grid.clear(false, false, false);
+            solver.setCurrentSpeed(currentSpeed.get());
             solver.isRunningProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (!t1) {
                     setCurrentState(ServiceState.COMPLETED);

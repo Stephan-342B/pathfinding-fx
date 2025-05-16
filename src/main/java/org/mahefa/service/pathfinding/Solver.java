@@ -7,6 +7,7 @@ import org.mahefa.component.RouteNode;
 import org.mahefa.service.State;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 public abstract class Solver extends State {
 
@@ -14,18 +15,16 @@ public abstract class Solver extends State {
     protected RouteNode currentRouteNode;
     protected Map<Cell, RouteNode> nodes;
 
-    protected long currentSpeed;
+    protected Long currentSpeed;
     protected long lastToggle = 0L;
 
     public Solver(Grid grid) {
         this.grid = grid;
     }
 
-    public abstract AnimationTimer solve();
+    public abstract Supplier<AnimationTimer> solve();
 
-    public abstract AnimationTimer drawback();
-
-    public void setCurrentSpeed(long speed) {
+    public void setCurrentSpeed(Long speed) {
         this.currentSpeed = speed;
     }
 }

@@ -1,11 +1,11 @@
 package org.mahefa.service.maze_generator;
 
-import animatefx.animation.ZoomIn;
 import javafx.animation.AnimationTimer;
 import org.mahefa.common.CellStyle;
-import org.mahefa.common.enumerator.NodeType;
 import org.mahefa.component.Cell;
 import org.mahefa.component.Grid;
+
+import java.util.function.Supplier;
 
 public class Randomized extends MazeGenerator {
 
@@ -14,7 +14,7 @@ public class Randomized extends MazeGenerator {
     }
 
     @Override
-    public AnimationTimer build() {
+    public Supplier<AnimationTimer> build() {
         setIsRunning(true);
 
         for (int row = 0; row < grid.getRowLen(); row++) {
@@ -24,11 +24,10 @@ public class Randomized extends MazeGenerator {
 
                 Cell currentCell = grid.getCellAt(currentRow, currentCol);
                 CellStyle.Flag currentFlag = currentCell.getFlag();
-                NodeType nodeType = currentCell.getNodeType();
 
-                if (Math.random() > 0.75 && currentFlag.equals(CellStyle.Flag.NONE) && nodeType.equals(NodeType.NONE)) {
+                if (Math.random() < 0.25 && currentFlag.equals(CellStyle.Flag.NONE) && !currentCell.isSpecialNode()) {
                     currentCell.setFlag(CellStyle.Flag.WALL_NODE);
-                    new ZoomIn(currentCell).setSpeed(4).play();
+                    currentCell.setWeight(0);
                 }
             }
         }

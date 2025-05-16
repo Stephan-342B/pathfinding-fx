@@ -11,6 +11,8 @@ import org.mahefa.service.maze_generator.Randomized;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.function.Supplier;
+
 import static org.mahefa.common.CellStyle.Flag.NONE;
 import static org.mahefa.common.CellStyle.Flag.WALL_NODE;
 
@@ -30,7 +32,7 @@ public class MazeService extends AnimatableService {
     public void init() {
         currentSpeed.addListener((observableValue, animationSpeed, t1) -> {
             if (mazeGenerator != null) {
-                mazeGenerator.setCurrentSpeed(t1.getInterval());
+                mazeGenerator.setCurrentSpeed(t1);
             }
         });
     }
@@ -51,7 +53,7 @@ public class MazeService extends AnimatableService {
                 case ALDOUS_BRODER:
                     grid.setDefaultFlag(WALL_NODE);
                     mazeGenerator = new AldousBroder(grid);
-                    mazeGenerator.setCurrentSpeed(currentSpeed.get().getInterval());
+                    mazeGenerator.setCurrentSpeed(currentSpeed.get());
                     break;
                 case BASIC_RANDOM:
                     grid.setDefaultFlag(NONE);
@@ -61,17 +63,17 @@ public class MazeService extends AnimatableService {
                     throw new UnsupportedAlgorithmException("Unsupported algorithm: " + algorithm);
             }
 
-            grid.clear(true, false);
+            grid.clear(true, false, false);
             mazeGenerator.isRunningProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (!t1) {
                     setCurrentState(ServiceState.COMPLETED);
                 }
             });
 
-            AnimationTimer animationTimer = mazeGenerator.build();
+            Supplier<AnimationTimer> animationTimerSupplier = mazeGenerator.build();
 
-            if (animationTimer != null)
-                run(animationTimer);
+            if (animationTimerSupplier != null)
+                run(animationTimerSupplier);
         }
     }
 }

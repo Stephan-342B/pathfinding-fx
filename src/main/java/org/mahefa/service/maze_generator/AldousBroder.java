@@ -1,11 +1,12 @@
 package org.mahefa.service.maze_generator;
 
 import javafx.animation.AnimationTimer;
-import org.mahefa.common.enumerator.NodeType;
 import org.mahefa.common.utils.GridUtils;
 import org.mahefa.component.Cell;
 import org.mahefa.component.Grid;
 import org.mahefa.component.Location;
+
+import java.util.function.Supplier;
 
 import static org.mahefa.common.CellStyle.Flag;
 import static org.mahefa.common.CellStyle.Flag.*;
@@ -17,8 +18,8 @@ public class AldousBroder extends MazeGenerator {
     }
 
     @Override
-    public AnimationTimer build() {
-        return new AnimationTimer() {
+    public Supplier<AnimationTimer> build() {
+        return () -> new AnimationTimer() {
 
             private int totalUnvisitedCell;
             private Cell currentCell, neighbour;
@@ -52,9 +53,9 @@ public class AldousBroder extends MazeGenerator {
                         markAsVisited(currentCell);
                         totalUnvisitedCell--;
 
-                        currentCell.setFlag(Flag.POINTER);
+                        currentCell.setFlag(Flag.CURRENT);
                     } else {
-                        if (currentFlag == null || currentCell.getNodeType().equals(NodeType.NONE)) {
+                        if (currentFlag == null || !currentCell.isSpecialNode()) {
                             currentCell.setFlag(NONE);
                         } else {
                             currentCell.revertFlag();
@@ -63,7 +64,7 @@ public class AldousBroder extends MazeGenerator {
                         if (totalUnvisitedCell > 0) {
                             // Pick random neighbour
                             neighbour = GridUtils.getRandomNeighbour(grid, currentCell, true);
-                            neighbour.setFlag(POINTER);
+                            neighbour.setFlag(CURRENT);
 //                            new ZoomIn(neighbour).play();
 
                             // If the chosen neighbour has not been visited
@@ -77,7 +78,7 @@ public class AldousBroder extends MazeGenerator {
                                 Cell wallCell = grid.getCellAt(wallRow, wallCol);
 
                                 // Remove the wall between the current cell and the neighbour
-                                if (wallCell.getFlag().equals(WALL_NODE) && currentCell.getNodeType().equals(NodeType.NONE)) {
+                                if (wallCell.getFlag().equals(WALL_NODE) && !currentCell.isSpecialNode()) {
                                     wallCell.setFlag(NONE);
                                 }
 
