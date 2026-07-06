@@ -146,13 +146,11 @@ public class MainWindowController {
     }
 
     private Grid buildGrid(double width, double height) {
-        double defaultPadding = 5.0;
-
         // Clear existing grid
         gridPane.getChildren().clear();
 
-        // Create a grid
-        Grid grid = new Grid(width + defaultPadding, height + defaultPadding, gridSize, (currentCell) -> {
+        // Create a grid sized to the actual pane, so the grid centers with equal margins
+        Grid grid = new Grid(width, height, gridSize, (currentCell) -> {
             if (currentCell.isSpecialNode()) {
                 NodeType currentNodeType = currentCell.getNodeType();
 
@@ -289,8 +287,10 @@ public class MainWindowController {
         if (gridService == null)
             throw new PathFindingException("Service not instantiated properly");
 
-        gridService.getMazeService().setAlgorithm(MazeAlgorithm.valueOf(algorithm));
-        gridService.getMazeService().run();
+//        gridService.getMazeService().setAlgorithm(MazeAlgorithm.valueOf(algorithm));
+//        gridService.getMazeService().run();
+        gridService.getMazeGeneratorWorker().setAlgorithm(MazeAlgorithm.valueOf(algorithm));
+        gridService.getMazeGeneratorWorker().start();
 
         // Release
         currentMenu.selectedItemProperty().setValue(null);
@@ -344,7 +344,8 @@ public class MainWindowController {
         btnPlay.getLabel().setText(btnTxtArg + "!");
 
         // Update service
-        gridService.getRouteFinderService().setAlgorithm(algorithm);
+//        gridService.getRouteFinderService().setAlgorithm(algorithm);
+        gridService.getPathfindingWorker().setAlgorithm(algorithm);
     }
 
     private void menuAction(Menu currentMenu) {
@@ -366,7 +367,8 @@ public class MainWindowController {
     private void execute() {
         try {
             if (gridService.isReady()) {
-                gridService.getRouteFinderService().run();
+//                gridService.getRouteFinderService().run();
+                gridService.getPathfindingWorker().start();
             }
         } catch (Exception e) {
             if (e instanceof MissingAlgorithmException) {
@@ -376,7 +378,8 @@ public class MainWindowController {
                 LOGGER.error(e.getMessage(), e);
             }
 
-            gridService.setCurrentState(ServiceState.FAILED);
+//            gridService.setCurrentState(ServiceState.FAILED);
+            gridService.cancelRunningWorkers();
         }
     }
 }

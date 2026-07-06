@@ -29,9 +29,11 @@ public class Grid {
         colLen = ((int) Math.ceil(canvasWidth / gridSize) / 2) * 2 - 1;
         cells = new Cell[rowLen][colLen];
 
-        // Calculate padding
-        double paddingY = Math.abs((colLen * gridSize) - canvasWidth) / 2;
-        double paddingX = Math.abs((rowLen * gridSize) - canvasHeight) / 2;
+        // Center the grid within the canvas: split the leftover space evenly on each
+        // side. Signed (not Math.abs) so the margins stay equal even when rounding makes
+        // the grid slightly wider than the canvas — otherwise the gap flips to one side.
+        double paddingY = (canvasWidth - (colLen * gridSize)) / 2;
+        double paddingX = (canvasHeight - (rowLen * gridSize)) / 2;
 
         // Default start and target cell position
         startRow = (int) Math.ceil(rowLen / 2d);
