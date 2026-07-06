@@ -4,10 +4,11 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import org.mahefa.common.enumerator.AnimationSpeed;
-import org.mahefa.common.enumerator.MazeGenerationAnimationSpeed;
 import org.mahefa.common.enumerator.LaunchAnimationSpeed;
-import org.mahefa.common.enumerator.ServiceState;
+import org.mahefa.common.enumerator.MazeGenerationAnimationSpeed;
 import org.mahefa.component.Grid;
+import org.mahefa.service.concurrent.MazeGeneratorWorker;
+import org.mahefa.service.concurrent.PathfindingWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,20 +19,30 @@ public class GridService {
     private static final Logger LOGGER = LoggerFactory.getLogger(GridService.class);
 
     protected Grid grid;
-    private MazeService mazeService;
-    private RouteFinderService routeFinderService;
+//    private MazeService mazeService;
+//    private RouteFinderService routeFinderService;
+    private MazeGeneratorWorker mazeGeneratorWorker;
+    private PathfindingWorker pathfindingWorker;
 
     private BooleanProperty isReady = new SimpleBooleanProperty(false);
 
     public GridService(Grid grid) {
         this.grid = grid;
-        this.mazeService = new MazeService(grid);
-        this.routeFinderService = new RouteFinderService(grid);
+//        this.mazeService = new MazeService(grid);
+//        this.routeFinderService = new RouteFinderService(grid);
+        this.mazeGeneratorWorker = new MazeGeneratorWorker(grid);
+        this.pathfindingWorker = new PathfindingWorker(grid);
 
+//        isReady.bind(
+//                Bindings.and(
+//                        mazeService.currentStateProperty().isEqualTo(ServiceState.IDLE),
+//                        routeFinderService.currentStateProperty().isEqualTo(ServiceState.IDLE)
+//                )
+//        );
         isReady.bind(
                 Bindings.and(
-                        mazeService.currentStateProperty().isEqualTo(ServiceState.IDLE),
-                        routeFinderService.currentStateProperty().isEqualTo(ServiceState.IDLE)
+                        mazeGeneratorWorker.runningProperty().not(),
+                        pathfindingWorker.runningProperty().not()
                 )
         );
     }
@@ -40,12 +51,20 @@ public class GridService {
         return grid;
     }
 
-    public MazeService getMazeService() {
-        return mazeService;
+//    public MazeService getMazeService() {
+//        return mazeService;
+//    }
+//
+//    public RouteFinderService getRouteFinderService() {
+//        return routeFinderService;
+//    }
+
+    public MazeGeneratorWorker getMazeGeneratorWorker() {
+        return mazeGeneratorWorker;
     }
 
-    public RouteFinderService getRouteFinderService() {
-        return routeFinderService;
+    public PathfindingWorker getPathfindingWorker() {
+        return pathfindingWorker;
     }
 
     public boolean isReady() {
@@ -60,14 +79,30 @@ public class GridService {
         this.isReady.set(isReady);
     }
 
-    public void setCurrentState(ServiceState currentState) {
-        mazeService.setCurrentState(currentState);
-        routeFinderService.setCurrentState(currentState);
+//    public void setCurrentState(ServiceState currentState) {
+//        mazeService.setCurrentState(currentState);
+//        routeFinderService.setCurrentState(currentState);
+//    }
+
+    /**
+     * Cancels both workers if they're running. Used to recover from an exception raised
+     * before either worker's AnimationTimer ever started (e.g. no algorithm selected yet).
+     */
+    public void cancelRunningWorkers() {
+        if (mazeGeneratorWorker.isRunning()) {
+            mazeGeneratorWorker.cancel();
+        }
+
+        if (pathfindingWorker.isRunning()) {
+            pathfindingWorker.cancel();
+        }
     }
 
     public void updateSpeed(AnimationSpeed currentSpeed) {
-        getMazeService().updateSpeed(MazeGenerationAnimationSpeed.valueOf(currentSpeed.name()).getInterval());
-        getRouteFinderService().updateSpeed(LaunchAnimationSpeed.valueOf(currentSpeed.name()).getInterval());
+//        getMazeService().updateSpeed(MazeGenerationAnimationSpeed.valueOf(currentSpeed.name()).getInterval());
+//        getRouteFinderService().updateSpeed(LaunchAnimationSpeed.valueOf(currentSpeed.name()).getInterval());
+        getMazeGeneratorWorker().setCurrentSpeed(MazeGenerationAnimationSpeed.valueOf(currentSpeed.name()).getInterval());
+        getPathfindingWorker().setCurrentSpeed(LaunchAnimationSpeed.valueOf(currentSpeed.name()).getInterval());
     }
 
     public void clearBoard() {
@@ -86,8 +121,9 @@ public class GridService {
     }
 
     private void clear(boolean reset, boolean removeWalls) {
-        mazeService.currentStateProperty().setValue(ServiceState.STOPPING);
-        routeFinderService.currentStateProperty().setValue(ServiceState.STOPPING);
+//        mazeService.currentStateProperty().setValue(ServiceState.STOPPING);
+//        routeFinderService.currentStateProperty().setValue(ServiceState.STOPPING);
+        cancelRunningWorkers();
 
         if (grid != null) {
             grid.setDefaultFlag(NONE);
