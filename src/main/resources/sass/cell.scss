@@ -2,6 +2,12 @@
   -fx-border-style: solid;
   -fx-border-width: 1px;
   -fx-border-color: -grid-border-color;
+  // Explicit base so background transitions have a value to animate FROM (else they snap).
+  -fx-background-color: transparent;
+
+  // JavaFX 23 CSS transitions: state colour/border changes (driven by the :wall / :current /
+  // :visited / :shortest-path pseudo-classes) fade instead of snapping.
+  transition: -fx-background-color 0.25s ease-out, -fx-border-color 0.25s ease-out;
 
   #tile {
     -fx-border-style: none;
@@ -43,7 +49,7 @@
   }
 
   &:visited {
-    //-fx-border-color: transparent;
+    // Background is morphed to cyan by NodeAnimations.visited() (native Timeline); border via CSS.
     -fx-border-color: -visited-color;
   }
 }

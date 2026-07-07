@@ -7,10 +7,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.Pane;
 import com.mahefa.pathfindingfx.domain.enumerator.NodeType;
+import com.mahefa.pathfindingfx.ui.animation.NodeAnimations;
 import com.mahefa.pathfindingfx.ui.component.Cell;
 
 import static com.mahefa.pathfindingfx.ui.style.CellStyle.Flag;
-import static com.mahefa.pathfindingfx.ui.animation.CellAnimation.SPECIAL_NODES_ANIMATION;
 
 public class CellEventHandler implements EventHandler<Event> {
 
@@ -109,7 +109,7 @@ public class CellEventHandler implements EventHandler<Event> {
             if (targetNode.isSpecialNode()) {
                 ImageView imageView = (ImageView) sourceNode.getChildren().get(0);
                 imageView.visibleProperty().setValue(true);
-                SPECIAL_NODES_ANIMATION.build(imageView).play();
+                NodeAnimations.pop(imageView);
             } else {
                 targetNode.setNodeType(sourceNode.getNodeType());
             }

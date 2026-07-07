@@ -18,6 +18,7 @@ import com.mahefa.pathfindingfx.exception.MissingAlgorithmException;
 import com.mahefa.pathfindingfx.exception.PathFindingException;
 import com.mahefa.pathfindingfx.ui.component.*;
 import com.mahefa.pathfindingfx.domain.*;
+import com.mahefa.pathfindingfx.ui.animation.NodeAnimations;
 import com.mahefa.pathfindingfx.ui.event.CellEventHandler;
 import com.mahefa.pathfindingfx.config.AppProperties;
 import com.mahefa.pathfindingfx.service.GridService;
@@ -27,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static com.mahefa.pathfindingfx.ui.style.StateStyle.State;
-import static com.mahefa.pathfindingfx.ui.animation.CellAnimation.*;
 
 @Component
 public class MainWindowController {
@@ -168,7 +168,7 @@ public class MainWindowController {
 
                 imageView.managedProperty().bind(imageView.visibleProperty());
 
-                SPECIAL_NODES_ANIMATION.build(imageView).play();
+                NodeAnimations.pop(imageView);
             }
 
             gridPane.getChildren().add(currentCell);
@@ -242,20 +242,19 @@ public class MainWindowController {
             }
         });
 
+        // Reveal animations are native javafx (no jfxanimation): a scale pulse + colour morph for
+        // visited, a scale pulse for wall/shortest-path. Simple colours come from CSS. On any other
+        // flag (NONE/CURRENT) we release the visited morph's programmatic background so CSS applies.
         cell.flagProperty().addListener((observable, oldValue, newValue) -> {
             switch (newValue) {
-                case WALL_NODE:
-                    WALL_ANIMATION.build(cell).play();
-                    break;
-//                case CURRENT:
-                case VISITED:
-                    VISITED_ANIMATION.build(cell).play();
-                    break;
-                case SHORTEST_PATH_NODE:
-                    SHORTEST_PATH_ANIMATION.build(cell).play();
-                default:
+                case WALL_NODE -> NodeAnimations.pop(cell);
+                case VISITED -> NodeAnimations.visited(cell);
+                case SHORTEST_PATH_NODE -> NodeAnimations.shortestPath(cell);
+                default -> {
                     cell.setBackground(null);
-                    break;
+                    cell.setScaleX(1);
+                    cell.setScaleY(1);
+                }
             }
         });
     }
@@ -275,7 +274,7 @@ public class MainWindowController {
         newCell.setNodeType(currentNodeType);
         newCell.getChildren().add(currentImageView);
 
-        SPECIAL_NODES_ANIMATION.build(currentImageView).play();
+        NodeAnimations.pop(currentImageView);
     }
 
     private void updateSpeed(Menu parent, MenuItem currentMenuItem) {
