@@ -1,4 +1,4 @@
-# Application-owned config, namespaced under 'app' (bound by org.mahefa.config.AppProperties)
+# Application-owned config, namespaced under 'app' (bound by com.mahefa.pathfindingfx.config.AppProperties)
 # so it never collides with Spring's own top-level namespaces such as 'logging' below.
 app:
   grid:
@@ -34,4 +34,4 @@ logging:
     org.springframework.boot: WARN
     # Capture our own DEBUG detail. Harmless while the console is thresholded to INFO above;
     # it only becomes visible once app.narrative.file above is enabled.
-    org.mahefa: DEBUG
+    com.mahefa.pathfindingfx: DEBUG

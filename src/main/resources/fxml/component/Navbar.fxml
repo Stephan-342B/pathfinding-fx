@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Text?>
-<?import org.mahefa.component.MenuBar?>
+<?import com.mahefa.pathfindingfx.ui.component.MenuBar?>
 
 <fx:root minHeight="53.0" styleClass="navbar" type="javafx.scene.layout.FlowPane" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
     <HBox fx:id="title">

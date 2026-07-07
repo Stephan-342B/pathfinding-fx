@@ -3,7 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<?import org.mahefa.component.*?>
+<?import com.mahefa.pathfindingfx.ui.component.*?>
 
 <fx:root id="menuBar" type="javafx.scene.layout.FlowPane" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
     <Menu fx:id="menu_algorithms" text="Algorithms">
