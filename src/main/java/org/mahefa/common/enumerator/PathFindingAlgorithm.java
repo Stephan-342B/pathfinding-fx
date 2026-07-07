@@ -1,5 +1,19 @@
 package org.mahefa.common.enumerator;
 
 public enum PathFindingAlgorithm {
-    DIJKSTRA, A_STAR, BREADTH_FIRST_SEARCH, DEPTH_FIRST_SEARCH
+    DIJKSTRA("Dijkstra"),
+    A_STAR("A*"),
+    BREADTH_FIRST_SEARCH("Breadth-First Search"),
+    DEPTH_FIRST_SEARCH("Depth-First Search");
+
+    private final String label;
+
+    PathFindingAlgorithm(String label) {
+        this.label = label;
+    }
+
+    /** Human-readable name for the console narrative / UI. */
+    public String getLabel() {
+        return label;
+    }
 }

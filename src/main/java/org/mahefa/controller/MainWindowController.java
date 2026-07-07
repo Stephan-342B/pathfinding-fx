@@ -18,10 +18,11 @@ import org.mahefa.common.exceptions.MissingAlgorithmException;
 import org.mahefa.common.exceptions.PathFindingException;
 import org.mahefa.component.*;
 import org.mahefa.events.CellEventHandler;
+import org.mahefa.config.AppProperties;
 import org.mahefa.service.GridService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import static org.mahefa.common.StateStyle.State;
@@ -42,7 +43,7 @@ public class MainWindowController {
     @FXML HBox gridContainer;
     @FXML Pane gridPane;
 
-    @Value("${grid.size}") private double gridSize;
+    @Autowired private AppProperties appProperties;
 
     private MenuBar menuBar;
     private Button btnPlay;
@@ -133,7 +134,7 @@ public class MainWindowController {
         // Update grid accordingly to the size of the container
         gridPane.layoutBoundsProperty().addListener((e) -> {
             Grid newGrid = buildGrid(gridPane.getPrefWidth(), gridPane.getPrefHeight());
-            gridService = new GridService(newGrid);
+            gridService = new GridService(newGrid, appProperties.getNarrative().newLogCleaner());
             gridService.updateSpeed(currentSpeed.get());
 
             // Bind the button's style property to the service's current state property
@@ -150,7 +151,7 @@ public class MainWindowController {
         gridPane.getChildren().clear();
 
         // Create a grid sized to the actual pane, so the grid centers with equal margins
-        Grid grid = new Grid(width, height, gridSize, (currentCell) -> {
+        Grid grid = new Grid(width, height, appProperties.getGrid().getSize(), (currentCell) -> {
             if (currentCell.isSpecialNode()) {
                 NodeType currentNodeType = currentCell.getNodeType();
 
@@ -287,8 +288,6 @@ public class MainWindowController {
         if (gridService == null)
             throw new PathFindingException("Service not instantiated properly");
 
-//        gridService.getMazeService().setAlgorithm(MazeAlgorithm.valueOf(algorithm));
-//        gridService.getMazeService().run();
         gridService.getMazeGeneratorWorker().setAlgorithm(MazeAlgorithm.valueOf(algorithm));
         gridService.getMazeGeneratorWorker().start();
 
@@ -344,7 +343,6 @@ public class MainWindowController {
         btnPlay.getLabel().setText(btnTxtArg + "!");
 
         // Update service
-//        gridService.getRouteFinderService().setAlgorithm(algorithm);
         gridService.getPathfindingWorker().setAlgorithm(algorithm);
     }
 
@@ -367,7 +365,6 @@ public class MainWindowController {
     private void execute() {
         try {
             if (gridService.isReady()) {
-//                gridService.getRouteFinderService().run();
                 gridService.getPathfindingWorker().start();
             }
         } catch (Exception e) {
@@ -378,7 +375,6 @@ public class MainWindowController {
                 LOGGER.error(e.getMessage(), e);
             }
 
-//            gridService.setCurrentState(ServiceState.FAILED);
             gridService.cancelRunningWorkers();
         }
     }

@@ -9,36 +9,25 @@ import org.mahefa.common.enumerator.MazeGenerationAnimationSpeed;
 import org.mahefa.component.Grid;
 import org.mahefa.service.concurrent.MazeGeneratorWorker;
 import org.mahefa.service.concurrent.PathfindingWorker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.mahefa.service.concurrent.progress.LogCleaner;
 
 import static org.mahefa.common.CellStyle.Flag.NONE;
 
 public class GridService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GridService.class);
-
     protected Grid grid;
-//    private MazeService mazeService;
-//    private RouteFinderService routeFinderService;
     private MazeGeneratorWorker mazeGeneratorWorker;
     private PathfindingWorker pathfindingWorker;
+    private final LogCleaner logCleaner;
 
     private BooleanProperty isReady = new SimpleBooleanProperty(false);
 
-    public GridService(Grid grid) {
+    public GridService(Grid grid, LogCleaner logCleaner) {
         this.grid = grid;
-//        this.mazeService = new MazeService(grid);
-//        this.routeFinderService = new RouteFinderService(grid);
+        this.logCleaner = logCleaner;
         this.mazeGeneratorWorker = new MazeGeneratorWorker(grid);
         this.pathfindingWorker = new PathfindingWorker(grid);
 
-//        isReady.bind(
-//                Bindings.and(
-//                        mazeService.currentStateProperty().isEqualTo(ServiceState.IDLE),
-//                        routeFinderService.currentStateProperty().isEqualTo(ServiceState.IDLE)
-//                )
-//        );
         isReady.bind(
                 Bindings.and(
                         mazeGeneratorWorker.runningProperty().not(),
@@ -50,14 +39,6 @@ public class GridService {
     public Grid getGrid() {
         return grid;
     }
-
-//    public MazeService getMazeService() {
-//        return mazeService;
-//    }
-//
-//    public RouteFinderService getRouteFinderService() {
-//        return routeFinderService;
-//    }
 
     public MazeGeneratorWorker getMazeGeneratorWorker() {
         return mazeGeneratorWorker;
@@ -79,11 +60,6 @@ public class GridService {
         this.isReady.set(isReady);
     }
 
-//    public void setCurrentState(ServiceState currentState) {
-//        mazeService.setCurrentState(currentState);
-//        routeFinderService.setCurrentState(currentState);
-//    }
-
     /**
      * Cancels both workers if they're running. Used to recover from an exception raised
      * before either worker's AnimationTimer ever started (e.g. no algorithm selected yet).
@@ -99,30 +75,26 @@ public class GridService {
     }
 
     public void updateSpeed(AnimationSpeed currentSpeed) {
-//        getMazeService().updateSpeed(MazeGenerationAnimationSpeed.valueOf(currentSpeed.name()).getInterval());
-//        getRouteFinderService().updateSpeed(LaunchAnimationSpeed.valueOf(currentSpeed.name()).getInterval());
         getMazeGeneratorWorker().setCurrentSpeed(MazeGenerationAnimationSpeed.valueOf(currentSpeed.name()).getInterval());
         getPathfindingWorker().setCurrentSpeed(LaunchAnimationSpeed.valueOf(currentSpeed.name()).getInterval());
     }
 
     public void clearBoard() {
         clear(true, true);
-        LOGGER.debug("Board cleared");
+        logCleaner.onClear("board cleared");
     }
 
     public void clearWallWeight() {
         clear(false, true);
-        LOGGER.debug("Path cleared");
+        logCleaner.onClear("walls & weights cleared");
     }
 
     public void clearPath() {
         clear(false, false);
-        LOGGER.debug("Path cleared");
+        logCleaner.onClear("path cleared");
     }
 
     private void clear(boolean reset, boolean removeWalls) {
-//        mazeService.currentStateProperty().setValue(ServiceState.STOPPING);
-//        routeFinderService.currentStateProperty().setValue(ServiceState.STOPPING);
         cancelRunningWorkers();
 
         if (grid != null) {
