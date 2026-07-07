@@ -9,9 +9,11 @@ import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
+@ConfigurationPropertiesScan
 public class PathFindingFx extends Application {
 
     private ConfigurableApplicationContext springContext;

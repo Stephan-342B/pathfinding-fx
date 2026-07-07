@@ -43,6 +43,12 @@ public class AStar extends Solver {
                 nodes = new HashMap<>(0);
                 lastToggle = 0;
 
+                // Reset the metrics surfaced to the narrative for this run.
+                cellsExplored = 0;
+                openSetSize = 0;
+                pathFound = false;
+                pathLength = 0;
+
                 // Add start node in the open set
                 RouteNode start = new RouteNode(
                         grid.getStartCell(), 0d, distance(grid.getStartCell(), targetCell)
@@ -59,6 +65,7 @@ public class AStar extends Solver {
             public void handle(long now) {
                 if ((now - lastToggle) >= currentSpeed) {
                     if (!openSet.isEmpty()) {
+                        openSetSize = openSet.size();
                         if (currentCell == null) {
                             // Get cell having the lowest f score value
                             currentRouteNode = openSet.get();
@@ -66,20 +73,24 @@ public class AStar extends Solver {
                             currentCell.setFlag(Flag.CURRENT);
                         } else {
 
+                            Location cursor = currentCell.getLocation();
                             LOGGER.debug(
-                                    "Row: {} Col: {} [F: {}, G: {}, H: {}]",
-                                    currentCell.getLocation().getRow(), currentCell.getLocation().getCol(),
-                                    currentRouteNode.getF(), currentRouteNode.getG(), currentRouteNode.getH()
+                                    "expand ({},{}) f={} g={} h={} · frontier open={} closed={}",
+                                    cursor.getRow(), cursor.getCol(),
+                                    currentRouteNode.getF(), currentRouteNode.getG(), currentRouteNode.getH(),
+                                    openSet.size(), closedSet.size()
                             );
 
                             // Target reached
                             if (currentCell.equals(targetCell)) {
+                                pathFound = true;
                                 drawback().start();
                                 super.stop();
                             }
 
                             openSet.remove(currentRouteNode);
                             closedSet.add(currentCell);
+                            cellsExplored++;
 
                             List<Cell> neighbors = GridUtils.getNeighbors(grid, currentCell);
                             Iterator<Cell> iterator = neighbors.iterator();
@@ -114,8 +125,22 @@ public class AStar extends Solver {
                                     neighborRouteNode.setMoves(cost.getMoves());
                                     neighborRouteNode.setDirection(cost.getCurrentDirection());
 
+                                    Location at = neighbor.getLocation();
                                     if (!openSet.contains(neighborRouteNode)) {
                                         openSet.add(neighborRouteNode);
+                                        LOGGER.debug(
+                                                "   ↳ push ({},{}) f={} g={} h={} dir={}",
+                                                at.getRow(), at.getCol(),
+                                                neighborRouteNode.getF(), neighborRouteNode.getG(),
+                                                neighborRouteNode.getH(), cost.getCurrentDirection()
+                                        );
+                                    } else {
+                                        LOGGER.debug(
+                                                "   ↳ relax ({},{}) f={} g={} h={} dir={}",
+                                                at.getRow(), at.getCol(),
+                                                neighborRouteNode.getF(), neighborRouteNode.getG(),
+                                                neighborRouteNode.getH(), cost.getCurrentDirection()
+                                        );
                                     }
                                 }
                             }
@@ -158,6 +183,7 @@ public class AStar extends Solver {
 
                 // Reverse to get the path from start to target
                 Collections.reverse(shortestPath);
+                pathLength = shortestPath.size();
 
                 // Get current cell
                 currentCell = shortestPath.get(0);

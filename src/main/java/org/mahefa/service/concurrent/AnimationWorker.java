@@ -4,6 +4,7 @@ import javafx.animation.AnimationTimer;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Worker;
+import org.mahefa.service.concurrent.progress.ProgressReporter;
 
 import java.util.function.Supplier;
 
@@ -91,6 +92,7 @@ public abstract class AnimationWorker<T> implements Worker<T> {
         stopTimer();
         value.set(completionValue);
         setState(State.SUCCEEDED);
+        onSucceeded();
     }
 
     @Override
@@ -101,7 +103,30 @@ public abstract class AnimationWorker<T> implements Worker<T> {
 
         stopTimer();
         setState(State.CANCELLED);
+        onCancelled();
         return true;
+    }
+
+    /**
+     * Called once the worker reaches {@code SUCCEEDED}. No-op by default; subclasses override to
+     * close out their narrative (e.g. commit the {@link ProgressReporter} with a result summary).
+     */
+    protected void onSucceeded() {
+    }
+
+    /**
+     * Called once the worker reaches {@code CANCELLED}. No-op by default; subclasses override to
+     * close out their narrative with a cancelled summary.
+     */
+    protected void onCancelled() {
+    }
+
+    /**
+     * Publishes narrative text to this worker's {@link #messageProperty()} so a UI status label can
+     * bind to it. Intended for the durable header/summary lines, not every animation frame.
+     */
+    protected void updateMessage(String msg) {
+        message.set(msg);
     }
 
     private void stopTimer() {

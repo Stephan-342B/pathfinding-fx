@@ -36,4 +36,22 @@ public abstract class MazeGenerator extends State {
     public void setCurrentSpeed(long speed) {
         this.currentSpeed = speed;
     }
+
+    /** Cells visited so far, scanned from the {@code visited} grid for the narrative's live line. */
+    public int getVisitedCount() {
+        int count = 0;
+        for (boolean[] row : visited) {
+            for (boolean cell : row) {
+                if (cell) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    /** Total cells in the grid, used for the {@code x/y cells} progress fraction and the summary. */
+    public int getTotalCells() {
+        return grid.getRowLen() * grid.getColLen();
+    }
 }

@@ -1,0 +1,37 @@
+# Application-owned config, namespaced under 'app' (bound by org.mahefa.config.AppProperties)
+# so it never collides with Spring's own top-level namespaces such as 'logging' below.
+app:
+  grid:
+    size: 25.0
+  narrative:
+    # Optional per-session log file (opt-in). When enabled, a timestamped file is written, e.g.
+    # logs/pathfinding-fx-2026-07-07_14-30-05.log, capturing the narrative + DEBUG detail
+    # (per-cell f/g/h) that the console deliberately drops.
+    file:
+      enabled: false
+      directory: logs
+      base-name: pathfinding-fx
+      pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n"
+    # What the Clear Board / Walls / Path buttons do to the log:
+    #   console: WIPE (clear the screen) | MARKER (print a '— <label> —' divider)
+    #   file:    WIPE (truncate) | APPEND (add a divider) | NEW_FILE (roll to a fresh timestamped file)
+    clear:
+      console: WIPE
+      file: NEW_FILE
+
+logging:
+  pattern:
+    # Clean, message-only console so the worker narrative reads like scan-2-sheet's progress
+    # block. %highlight leaves INFO uncoloured and makes WARN/ERROR stand out on a terminal.
+    console: "%highlight(%msg%n)"
+  threshold:
+    # Only the narrative (INFO+) reaches the console; DEBUG detail (per-cell f/g/h, board-clear
+    # events, ...) is filtered out of the terminal but still flows to the file when it is enabled.
+    console: INFO
+  level:
+    # Quiet framework chatter so the custom worker narrative reads cleanly.
+    org.springframework: WARN
+    org.springframework.boot: WARN
+    # Capture our own DEBUG detail. Harmless while the console is thresholded to INFO above;
+    # it only becomes visible once app.narrative.file above is enabled.
+    org.mahefa: DEBUG

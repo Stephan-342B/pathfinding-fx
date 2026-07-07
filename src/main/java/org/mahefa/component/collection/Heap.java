@@ -73,4 +73,8 @@ public abstract class Heap<T> {
     public boolean isEmpty() {
         return data.isEmpty();
     }
+
+    public int size() {
+        return (data == null) ? 0 : data.size();
+    }
 }
