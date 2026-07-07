@@ -8,6 +8,7 @@ import com.mahefa.pathfindingfx.algorithm.State;
 
 import java.util.function.Supplier;
 
+@Deprecated(forRemoval = true) // superseded by the Stepper/StepPlayer pipeline; kept until removal
 public abstract class MazeGenerator extends State {
 
     protected Grid grid;

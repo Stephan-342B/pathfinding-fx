@@ -20,6 +20,7 @@ import java.util.function.Supplier;
 
 import static com.mahefa.pathfindingfx.ui.style.CellStyle.Flag;
 
+@Deprecated(forRemoval = true) // superseded by the Stepper/StepPlayer pipeline; kept until removal
 public class AStar extends Solver {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AStar.class);

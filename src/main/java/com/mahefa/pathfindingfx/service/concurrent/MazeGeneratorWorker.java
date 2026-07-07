@@ -19,6 +19,7 @@ import static com.mahefa.pathfindingfx.ui.style.CellStyle.Flag.WALL_NODE;
  * {@link javafx.concurrent.Worker}-based equivalent of the former {@code MazeService},
  * reusing the existing {@link MazeGenerator} implementations unchanged.
  */
+@Deprecated(forRemoval = true) // superseded by the Stepper/StepPlayer pipeline; kept until removal
 public class MazeGeneratorWorker extends AnimationWorker<MazeGenerator> {
 
     private final Grid grid;

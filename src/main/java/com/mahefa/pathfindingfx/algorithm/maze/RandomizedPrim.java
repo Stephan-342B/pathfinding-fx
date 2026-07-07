@@ -3,6 +3,7 @@ package com.mahefa.pathfindingfx.algorithm.maze;
 import org.springframework.stereotype.Component;
 
 @Component
+@Deprecated(forRemoval = true) // superseded by the Stepper/StepPlayer pipeline; kept until removal
 public class RandomizedPrim /*extends MazeGenerator*/ {
 
 //    @Override

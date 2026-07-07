@@ -14,6 +14,7 @@ import com.mahefa.pathfindingfx.algorithm.pathfinding.Solver;
  * {@link javafx.concurrent.Worker}-based equivalent of the former {@code RouteFinderService},
  * reusing the existing {@link Solver}/{@link AStar} implementations unchanged.
  */
+@Deprecated(forRemoval = true) // superseded by the Stepper/StepPlayer pipeline; kept until removal
 public class PathfindingWorker extends AnimationWorker<Solver> {
 
     private final Grid grid;

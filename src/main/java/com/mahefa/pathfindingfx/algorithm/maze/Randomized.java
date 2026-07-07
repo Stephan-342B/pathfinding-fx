@@ -7,6 +7,7 @@ import com.mahefa.pathfindingfx.ui.component.Grid;
 
 import java.util.function.Supplier;
 
+@Deprecated(forRemoval = true) // superseded by the Stepper/StepPlayer pipeline; kept until removal
 public class Randomized extends MazeGenerator {
 
     public Randomized(Grid grid) {
