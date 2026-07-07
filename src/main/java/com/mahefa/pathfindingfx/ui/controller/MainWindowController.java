@@ -289,8 +289,7 @@ public class MainWindowController {
         if (gridService == null)
             throw new PathFindingException("Service not instantiated properly");
 
-        gridService.getMazeGeneratorWorker().setAlgorithm(MazeAlgorithm.valueOf(algorithm));
-        gridService.getMazeGeneratorWorker().start();
+        gridService.generateMaze(MazeAlgorithm.valueOf(algorithm));
 
         // Release
         currentMenu.selectedItemProperty().setValue(null);
@@ -344,7 +343,7 @@ public class MainWindowController {
         btnPlay.getLabel().setText(btnTxtArg + "!");
 
         // Update service
-        gridService.getPathfindingWorker().setAlgorithm(algorithm);
+        gridService.setPathAlgorithm(algorithm);
     }
 
     private void menuAction(Menu currentMenu) {
@@ -366,7 +365,7 @@ public class MainWindowController {
     private void execute() {
         try {
             if (gridService.isReady()) {
-                gridService.getPathfindingWorker().start();
+                gridService.findPath();
             }
         } catch (Exception e) {
             if (e instanceof MissingAlgorithmException) {

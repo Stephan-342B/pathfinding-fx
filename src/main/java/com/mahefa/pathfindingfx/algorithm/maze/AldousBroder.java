@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 import static com.mahefa.pathfindingfx.ui.style.CellStyle.Flag;
 import static com.mahefa.pathfindingfx.ui.style.CellStyle.Flag.*;
 
+@Deprecated(forRemoval = true) // superseded by the Stepper/StepPlayer pipeline; kept until removal
 public class AldousBroder extends MazeGenerator {
 
     public AldousBroder(Grid grid) {

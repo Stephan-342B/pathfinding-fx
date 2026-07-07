@@ -9,6 +9,7 @@ import com.mahefa.pathfindingfx.algorithm.State;
 import java.util.Map;
 import java.util.function.Supplier;
 
+@Deprecated(forRemoval = true) // superseded by the Stepper/StepPlayer pipeline; kept until removal
 public abstract class Solver extends State {
 
     protected Grid grid;
