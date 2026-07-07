@@ -2,14 +2,13 @@ package com.mahefa.pathfindingfx.domain;
 
 import com.mahefa.pathfindingfx.domain.enumerator.Direction;
 import com.mahefa.pathfindingfx.domain.enumerator.Rotate;
-import com.mahefa.pathfindingfx.ui.component.Cell;
 
 import java.util.List;
 
 public class RouteNode implements Comparable<RouteNode> {
 
-    private Cell current;
-    private Cell previous;
+    private Location current;
+    private Location previous;
     private Direction direction;
     private List<Rotate> moves;
 
@@ -18,29 +17,29 @@ public class RouteNode implements Comparable<RouteNode> {
     private double f;
     private double h;
 
-    public RouteNode(Cell current) {
+    public RouteNode(Location current) {
         this(current, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
     }
 
-    public RouteNode(Cell current, double g, double f) {
+    public RouteNode(Location current, double g, double f) {
         this.current = current;
         this.g = g;
         this.f = f;
     }
 
-    public Cell getCurrent() {
+    public Location getCurrent() {
         return current;
     }
 
-    public void setCurrent(Cell current) {
+    public void setCurrent(Location current) {
         this.current = current;
     }
 
-    public Cell getPrevious() {
+    public Location getPrevious() {
         return previous;
     }
 
-    public void setPrevious(Cell previous) {
+    public void setPrevious(Location previous) {
         this.previous = previous;
     }
 

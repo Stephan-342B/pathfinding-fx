@@ -52,11 +52,11 @@ public class AStar extends Solver {
 
                 // Add start node in the open set
                 RouteNode start = new RouteNode(
-                        grid.getStartCell(), 0d, distance(grid.getStartCell(), targetCell)
+                        grid.getStartCell().getLocation(), 0d, distance(grid.getStartCell(), targetCell)
                 );
                 start.setDirection(Direction.UP);
                 openSet.add(start);
-                nodes.put(grid.getStartCell(), start);
+                nodes.put(grid.getStartCell().getLocation(), start);
 
                 setIsRunning(true);
                 super.start();
@@ -70,7 +70,8 @@ public class AStar extends Solver {
                         if (currentCell == null) {
                             // Get cell having the lowest f score value
                             currentRouteNode = openSet.get();
-                            currentCell = currentRouteNode.getCurrent();
+                            Location currentLocation = currentRouteNode.getCurrent();
+                            currentCell = grid.getCellAt(currentLocation.getRow(), currentLocation.getCol());
                             currentCell.setFlag(Flag.CURRENT);
                         } else {
 
@@ -104,8 +105,9 @@ public class AStar extends Solver {
                                 if (neighborFlag.equals(Flag.WALL_NODE) || closedSet.contains(neighbor))
                                     continue;
 
-                                RouteNode neighborRouteNode = nodes.getOrDefault(neighbor, new RouteNode(neighbor));
-                                nodes.put(neighbor, neighborRouteNode);
+                                Location neighborLocation = neighbor.getLocation();
+                                RouteNode neighborRouteNode = nodes.getOrDefault(neighborLocation, new RouteNode(neighborLocation));
+                                nodes.put(neighborLocation, neighborRouteNode);
 
                                 /**
                                  * d(current, neighbor) is the weight of the edge from current to neighbor
@@ -122,7 +124,7 @@ public class AStar extends Solver {
                                     neighborRouteNode.setG(tentativeGScore);
                                     neighborRouteNode.setH(distance(neighbor, targetCell));
                                     neighborRouteNode.setF(tentativeGScore + neighborRouteNode.getH());
-                                    neighborRouteNode.setPrevious(currentCell);
+                                    neighborRouteNode.setPrevious(currentCell.getLocation());
                                     neighborRouteNode.setMoves(cost.getMoves());
                                     neighborRouteNode.setDirection(cost.getCurrentDirection());
 
@@ -178,7 +180,8 @@ public class AStar extends Solver {
                 RouteNode node = currentRouteNode;
 
                 while (node != null) {
-                    shortestPath.add(node.getCurrent());
+                    Location loc = node.getCurrent();
+                    shortestPath.add(grid.getCellAt(loc.getRow(), loc.getCol()));
                     node = nodes.get(node.getPrevious());
                 }
 
@@ -201,7 +204,7 @@ public class AStar extends Solver {
             @Override
             public void handle(long now) {
                 if ((now - lastToggle) >= LaunchAnimationSpeed.SHORTEST_PATH.getInterval()) {
-                    RouteNode currentRouteNode = nodes.get(currentCell);
+                    RouteNode currentRouteNode = nodes.get(currentCell.getLocation());
 
                     // Get rotation angle
                     currentAngle += ImageUtils.getRotationAngle(currentRouteNode.getMoves());

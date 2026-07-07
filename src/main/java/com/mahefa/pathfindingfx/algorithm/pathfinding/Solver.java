@@ -1,8 +1,8 @@
 package com.mahefa.pathfindingfx.algorithm.pathfinding;
 
 import javafx.animation.AnimationTimer;
-import com.mahefa.pathfindingfx.ui.component.Cell;
 import com.mahefa.pathfindingfx.ui.component.Grid;
+import com.mahefa.pathfindingfx.domain.Location;
 import com.mahefa.pathfindingfx.domain.RouteNode;
 import com.mahefa.pathfindingfx.algorithm.State;
 
@@ -13,7 +13,7 @@ public abstract class Solver extends State {
 
     protected Grid grid;
     protected RouteNode currentRouteNode;
-    protected Map<Cell, RouteNode> nodes;
+    protected Map<Location, RouteNode> nodes;
 
     protected Long currentSpeed;
     protected long lastToggle = 0L;
