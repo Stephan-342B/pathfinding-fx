@@ -10,11 +10,28 @@ import com.mahefa.pathfindingfx.domain.enumerator.NodeType;
 import com.mahefa.pathfindingfx.ui.animation.NodeAnimations;
 import com.mahefa.pathfindingfx.ui.component.Cell;
 
+import java.util.function.BiConsumer;
+
 import static com.mahefa.pathfindingfx.ui.style.CellStyle.Flag;
 
 public class CellEventHandler implements EventHandler<Event> {
 
     private boolean isMousePressed = false;
+
+    // Notified on each DRAG_OVER while a start/target node is being dragged: (dragged node type, cell
+    // under the cursor). Lets the controller recompute the path live as the node moves.
+    private final BiConsumer<NodeType, Cell> onDragOverSpecial;
+    // Notified when a start/target drag ends (drop), so the controller can repaint for the final position.
+    private final Runnable onDragFinished;
+
+    public CellEventHandler() {
+        this(null, null);
+    }
+
+    public CellEventHandler(BiConsumer<NodeType, Cell> onDragOverSpecial, Runnable onDragFinished) {
+        this.onDragOverSpecial = onDragOverSpecial;
+        this.onDragFinished = onDragFinished;
+    }
 
     @Override
     public void handle(Event event) {
@@ -93,6 +110,12 @@ public class CellEventHandler implements EventHandler<Event> {
 
         if (sourceNode instanceof Pane) {
             event.acceptTransferModes(TransferMode.MOVE);
+
+            // Live path preview: while a start/target node is dragged, tell the controller which cell the
+            // cursor is over so it can recompute instantly. The node itself only moves on drop.
+            if (sourceNode.isSpecialNode() && onDragOverSpecial != null && event.getSource() instanceof Cell hovered) {
+                onDragOverSpecial.accept(sourceNode.getNodeType(), hovered);
+            }
         }
 
         event.consume();
@@ -113,6 +136,11 @@ public class CellEventHandler implements EventHandler<Event> {
             } else {
                 targetNode.setNodeType(sourceNode.getNodeType());
             }
+        }
+
+        // Repaint the path for the committed position (also clears a stale live preview on an invalid drop).
+        if (onDragFinished != null) {
+            onDragFinished.run();
         }
 
         event.setDropCompleted(true);

@@ -40,6 +40,7 @@ public final class NodeAnimations {
     private static final String RUNNING_KEY = "pfx.runningReveal";
 
     private static final Color VISITED_END = Color.rgb(0, 190, 218, 0.75);   // -visited-color
+    private static final Color PATH_COLOR = Color.rgb(255, 254, 106);        // -shortest-path-color
 
     private NodeAnimations() {
     }
@@ -90,12 +91,19 @@ public final class NodeAnimations {
         play(node, null, timeline);
     }
 
+    /** Style class that keeps a :visited cell transparent while its reveal tile plays (see cell.scss). */
+    private static final String REVEALING_CLASS = "revealing";
+
     /**
      * Visited-cell reveal (port of the web {@code visitedAnimation}): a scale pulse plus a background
-     * morph dark-blue → blue → green → cyan, ending filled cyan. Runs on a transient tile; the cell's
-     * final cyan fill is applied when the reveal finishes. 1.5s, ease-out.
+     * morph dark-blue → blue → green → cyan. Runs on a transient tile. The cell keeps the "revealing"
+     * class for the duration so it stays transparent (the tile does the fill, growing "from nothing");
+     * on finish the class is dropped and the CSS {@code :visited} cyan takes over. 1.5s, ease-out.
      */
     public static void visited(Pane cell) {
+        if (!cell.getStyleClass().contains(REVEALING_CLASS)) {
+            cell.getStyleClass().add(REVEALING_CLASS);
+        }
         Region tile = overlayTile(cell);
         Timeline timeline = new Timeline(
                 new KeyFrame(Duration.ZERO,
@@ -113,9 +121,46 @@ public final class NodeAnimations {
                         new KeyValue(tile.scaleYProperty(), 1.0, Interpolator.EASE_OUT),
                         new KeyValue(tile.backgroundProperty(), fill(VISITED_END, 0), Interpolator.EASE_OUT))
         );
-        // Persist the final cyan on the cell so it stays filled once the transient tile is removed.
-        timeline.setOnFinished(e -> cell.setBackground(fill(VISITED_END, 0)));
+        // Reveal done: drop "revealing" so the CSS :visited cyan shows (the tile is removed by play()).
+        timeline.setOnFinished(e -> cell.getStyleClass().remove(REVEALING_CLASS));
         play(cell, tile, timeline);
+    }
+
+    /**
+     * Shortest-path endpoint reveal, played when a dragged start/target is dropped: a tile grows from a
+     * rounded square to a full yellow square (scale pulse + corner morph). The cell's persistent yellow
+     * comes from CSS {@code :shortest-path}; the tile is removed on finish.
+     */
+    public static void pathReveal(Pane cell) {
+        Region tile = overlayTile(cell);
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO,
+                        new KeyValue(tile.scaleXProperty(), 0.3, Interpolator.EASE_OUT),
+                        new KeyValue(tile.scaleYProperty(), 0.3, Interpolator.EASE_OUT),
+                        new KeyValue(tile.backgroundProperty(), fill(PATH_COLOR, 100), Interpolator.EASE_OUT)),
+                new KeyFrame(Duration.seconds(0.75),
+                        new KeyValue(tile.scaleXProperty(), 1.2, Interpolator.EASE_OUT),
+                        new KeyValue(tile.scaleYProperty(), 1.2, Interpolator.EASE_OUT),
+                        new KeyValue(tile.backgroundProperty(), fill(PATH_COLOR, 0), Interpolator.EASE_OUT)),
+                new KeyFrame(Duration.seconds(1.5),
+                        new KeyValue(tile.scaleXProperty(), 1.0, Interpolator.EASE_OUT),
+                        new KeyValue(tile.scaleYProperty(), 1.0, Interpolator.EASE_OUT),
+                        new KeyValue(tile.backgroundProperty(), fill(PATH_COLOR, 0), Interpolator.EASE_OUT))
+        );
+        play(cell, tile, timeline);
+    }
+
+    /**
+     * Visited end-state with no reveal: the cyan comes from the CSS {@code :visited} rule, so we just
+     * stop any running reveal and clear leftover transforms. Used for the instant recompute while
+     * dragging start/target, where the 1.5s pulse would be unusable.
+     */
+    public static void visitedInstant(Region cell) {
+        stopRunning(cell);
+        cell.getStyleClass().remove(REVEALING_CLASS);
+        cell.setScaleX(1);
+        cell.setScaleY(1);
+        cell.setBackground(null);   // let the CSS :visited cyan show through
     }
 
     /**
@@ -125,6 +170,7 @@ public final class NodeAnimations {
      */
     public static void shortestPath(Pane cell) {
         stopRunning(cell);
+        cell.getStyleClass().remove(REVEALING_CLASS);
         cell.setBackground(null);
         cell.setBorder(null);
         cell.setScaleX(1);
@@ -138,6 +184,7 @@ public final class NodeAnimations {
      */
     public static void reset(Pane cell) {
         stopRunning(cell);
+        cell.getStyleClass().remove(REVEALING_CLASS);
         cell.setBackground(null);
         cell.setBorder(null);
         cell.setScaleX(1);

@@ -26,18 +26,40 @@ public final class GridStepRenderer implements Consumer<Step> {
 
     private final Grid grid;
 
+    // When true, render the final state only — no travelling arrow, and CURRENT collapses to VISITED.
+    // Used for the instant recompute while dragging start/target (see GridService.recomputeInstant).
+    private final boolean arrowless;
+
     // PATH ("drawback") state: one arrow that walks the path to the target.
     private ImageView arrow;
     private Cell priorPathCell;
 
     public GridStepRenderer(Grid grid) {
+        this(grid, false);
+    }
+
+    public GridStepRenderer(Grid grid, boolean arrowless) {
         this.grid = grid;
+        this.arrowless = arrowless;
     }
 
     @Override
     public void accept(Step step) {
         Location location = step.location();
         Cell cell = grid.getCellAt(location.getRow(), location.getCol());
+
+        if (arrowless) {
+            // Instant recompute: colour cells straight to their final state, no arrow. Path cells —
+            // including the start/target endpoints — turn yellow so an endpoint is never left blank; the
+            // endpoints keep their icon on top. Visited/wall only apply to plain cells.
+            switch (step.type()) {
+                case PATH -> cell.setFlag(Flag.SHORTEST_PATH_NODE);
+                case CURRENT, VISITED -> { if (!cell.isSpecialNode()) cell.setFlag(Flag.VISITED); }
+                case OPEN -> { if (!cell.isSpecialNode()) cell.setFlag(Flag.NONE); }
+                case WALL -> { if (!cell.isSpecialNode()) cell.setFlag(Flag.WALL_NODE); }
+            }
+            return;
+        }
 
         switch (step.type()) {
             case CURRENT -> cell.setFlag(Flag.CURRENT);

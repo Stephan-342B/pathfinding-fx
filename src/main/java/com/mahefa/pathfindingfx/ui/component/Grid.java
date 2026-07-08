@@ -186,5 +186,22 @@ public class Grid {
         ImageView imageView = (ImageView) getTargetCell().getChildren().get(0);
         imageView.setImage(new Image("/icons/circle.png"));
     }
+
+    /**
+     * Clears only the search result — CURRENT/VISITED/SHORTEST_PATH flags reset to NONE — leaving walls,
+     * weights, node positions, icons and styles untouched. Used by the instant recompute while dragging
+     * start/target, which repaints many times per second and must not churn the special-node icons.
+     */
+    public void clearSearchFlags() {
+        for (int r = 0; r < rowLen; r++) {
+            for (int c = 0; c < colLen; c++) {
+                Cell cell = getCellAt(r, c);
+                Flag flag = cell.getFlag();
+                if (flag == CURRENT || flag == VISITED || flag == SHORTEST_PATH_NODE) {
+                    cell.resetFlag(NONE);
+                }
+            }
+        }
+    }
 }
 

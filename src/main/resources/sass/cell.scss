@@ -55,9 +55,17 @@
   }
 
   &:visited {
-    // Background is morphed to cyan by NodeAnimations.visited() (native Timeline). Keep the light grid
-    // border: a cell's top/left edge is the shared gridline for its neighbours, so dropping it here
-    // would leave gaps in the grid as cells reveal.
+    // Cyan fill comes from CSS so it persists on its own — needed by the instant recompute while
+    // dragging (a one-shot programmatic fill would be wiped by the next CSS pass). Keep the light grid
+    // border: a cell's top/left edge is the shared gridline for its neighbours.
+    -fx-background-color: -visited-color;
     -fx-border-color: -grid-border-color;
+  }
+
+  // During the animated reveal the tile does the fill, so keep the cell itself transparent — this lets
+  // the reveal grow "from nothing" instead of flashing the full cyan. NodeAnimations.visited() adds the
+  // "revealing" class for the duration and removes it on finish, leaving the :visited cyan above.
+  &.revealing:visited {
+    -fx-background-color: transparent;
   }
 }
