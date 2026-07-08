@@ -134,7 +134,7 @@ public class GridService {
         if (!pathDisplayed.get() || !isReady() || pathAlgorithm != PathFindingAlgorithm.A_STAR) {
             return;
         }
-        grid.clear(false, false, false);   // clear previous visited/path, keep walls/start/target
+        grid.clearSearchFlags();   // clear only the previous result; don't touch walls/icons/styles
         GridStepRenderer renderer = new GridStepRenderer(grid, true);
         Stepper stepper = new AStarStepper(GridSnapshot.of(grid, start, target));
         while (stepper.hasNext()) {
