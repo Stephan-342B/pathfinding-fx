@@ -1,7 +1,19 @@
 .cell {
   -fx-border-style: solid;
-  -fx-border-width: 1px;
+  // Only top+left so shared interior gridlines are drawn once, not doubled to a bold 2px line
+  // (cells are packed edge-to-edge). Order: top right bottom left. Last row/column add the outer edges.
+  -fx-border-width: 1px 0 0 1px;
   -fx-border-color: -grid-border-color;
+  // Explicit base so background transitions have a value to animate FROM (else they snap).
+  -fx-background-color: transparent;
+
+  &.last-col { -fx-border-width: 1px 1px 0 1px; }
+  &.last-row { -fx-border-width: 1px 0 1px 1px; }
+  &.last-row.last-col { -fx-border-width: 1px; }
+
+  // JavaFX 23 CSS transitions: state colour/border changes (driven by the :wall / :current /
+  // :visited / :shortest-path pseudo-classes) fade instead of snapping.
+  transition: -fx-background-color 0.25s ease-out, -fx-border-color 0.25s ease-out;
 
   #tile {
     -fx-border-style: none;
@@ -43,7 +55,9 @@
   }
 
   &:visited {
-    //-fx-border-color: transparent;
-    -fx-border-color: -visited-color;
+    // Background is morphed to cyan by NodeAnimations.visited() (native Timeline). Keep the light grid
+    // border: a cell's top/left edge is the shared gridline for its neighbours, so dropping it here
+    // would leave gaps in the grid as cells reveal.
+    -fx-border-color: -grid-border-color;
   }
 }

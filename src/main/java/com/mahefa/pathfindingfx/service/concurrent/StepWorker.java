@@ -53,6 +53,18 @@ public class StepWorker extends AnimationWorker<Object> {
      * steps at the fixed {@code pathIntervalNanos} (0 = same as the search speed).
      */
     public void run(Stepper stepper, RunNarrative narrative, long pathIntervalNanos) {
+        run(stepper, narrative, pathIntervalNanos, false);
+    }
+
+    /**
+     * Runs the stepper instantly — every step is laid down in one pulse, regardless of the speed
+     * slider. Matches the original basic-random maze, which placed all its walls at once.
+     */
+    public void runInstant(Stepper stepper, RunNarrative narrative) {
+        run(stepper, narrative, 0L, true);
+    }
+
+    private void run(Stepper stepper, RunNarrative narrative, long pathIntervalNanos, boolean instant) {
         if (isRunning()) {
             cancel();
         }
@@ -66,7 +78,7 @@ public class StepWorker extends AnimationWorker<Object> {
             tally.record(step.type());
         };
 
-        long interval = (getCurrentSpeed() != null) ? getCurrentSpeed() : DEFAULT_INTERVAL_NANOS;
+        long interval = instant ? 0L : ((getCurrentSpeed() != null) ? getCurrentSpeed() : DEFAULT_INTERVAL_NANOS);
         player = new StepPlayer(stepper, renderer, interval, pathIntervalNanos);
 
         updateMessage(narrative.header());

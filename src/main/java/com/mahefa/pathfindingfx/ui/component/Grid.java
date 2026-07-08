@@ -52,6 +52,12 @@ public class Grid {
                 Cell cell = new Cell(posX, posY, r, c, gridSize);
                 Location location = cell.getLocation();
 
+                // Each cell draws only its top+left border so shared interior gridlines aren't drawn
+                // twice (which reads as a bold 2px line). The last row/column carry the outer
+                // bottom/right edges so the frame stays complete. See cell.scss.
+                if (r == rowLen - 1) cell.getStyleClass().add("last-row");
+                if (c == colLen - 1) cell.getStyleClass().add("last-col");
+
                 cell.setFlag(defaultFlag);
 
                 if ((r == startRow && c == startCol) || (r == targetRow && c == targetCol)) {
@@ -147,6 +153,12 @@ public class Grid {
             for (int c = 0; c < colLen; c++) {
                 Cell currentCell = getCellAt(r, c);
                 Flag currentFlag = currentCell.getFlag();
+
+                // Defensively drop a stray path arrow left on a plain cell by an interrupted drawback.
+                // Only start/target cells legitimately carry an icon ImageView.
+                if (!currentCell.isSpecialNode()) {
+                    currentCell.getChildren().removeIf(child -> child instanceof ImageView);
+                }
 
                 if (resetBoard) {
                     currentCell.setWeight(0);

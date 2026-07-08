@@ -66,14 +66,19 @@ public class AStarStepper extends AbstractStepper {
         if (previousCurrent != null && !previousCurrent.equals(current)) {
             emit(previousCurrent, StepType.VISITED);
         }
-        emit(current, StepType.CURRENT);
-        previousCurrent = current;
 
+        // Reaching the target ends the search. Mark it VISITED (turquoise) rather than CURRENT — pointer-
+        // and shortest-path colours are the same yellow, so a CURRENT target would look like an
+        // already-drawn path cell. The drawback later turns it SHORTEST_PATH (yellow) when the arrow lands.
         if (current.equals(target)) {
+            emit(current, StepType.VISITED);
             emitPath(currentNode);
             finished = true;
             return;
         }
+
+        emit(current, StepType.CURRENT);
+        previousCurrent = current;
 
         openSet.remove(currentNode);
         closed.add(current);
