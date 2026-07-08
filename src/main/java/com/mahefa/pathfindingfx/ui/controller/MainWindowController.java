@@ -138,6 +138,14 @@ public class MainWindowController {
             gridService = new GridService(newGrid, appProperties.getNarrative().newLogCleaner());
             gridService.updateSpeed(currentSpeed.get());
 
+            // Carry the current config over to the fresh service. Resizing (e.g. maximising) rebuilds the
+            // grid and therefore the service, so the already-selected algorithm must be re-applied —
+            // otherwise Visualize reports "Pick an Algorithm!" even though the button still shows one.
+            PathFindingAlgorithm selectedAlgorithm = btnPlay.selectedAlgorithmProperty().get();
+            if (selectedAlgorithm != null) {
+                gridService.setPathAlgorithm(selectedAlgorithm);
+            }
+
             // Bind the button's style property to the service's current state property
             btnPlay.currentStateProperty().bind(
                    Bindings.when(gridService.isReadyProperty()).then(State.READY).otherwise(State.BLOCKED)
