@@ -168,7 +168,7 @@ public class MainWindowController {
 
                 imageView.managedProperty().bind(imageView.visibleProperty());
 
-                NodeAnimations.pop(imageView);
+                NodeAnimations.popIcon(imageView);
             }
 
             gridPane.getChildren().add(currentCell);
@@ -250,11 +250,7 @@ public class MainWindowController {
                 case WALL_NODE -> NodeAnimations.pop(cell);
                 case VISITED -> NodeAnimations.visited(cell);
                 case SHORTEST_PATH_NODE -> NodeAnimations.shortestPath(cell);
-                default -> {
-                    cell.setBackground(null);
-                    cell.setScaleX(1);
-                    cell.setScaleY(1);
-                }
+                default -> NodeAnimations.reset(cell);
             }
         });
     }
@@ -274,7 +270,7 @@ public class MainWindowController {
         newCell.setNodeType(currentNodeType);
         newCell.getChildren().add(currentImageView);
 
-        NodeAnimations.pop(currentImageView);
+        NodeAnimations.popIcon(currentImageView);
     }
 
     private void updateSpeed(Menu parent, MenuItem currentMenuItem) {

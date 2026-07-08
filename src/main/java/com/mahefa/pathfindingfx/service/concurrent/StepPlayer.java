@@ -25,6 +25,7 @@ public final class StepPlayer {
     private final Consumer<Step> renderer;
     private volatile long intervalNanos;      // search / generation cadence (live)
     private final long pathIntervalNanos;     // fixed cadence for PATH steps (0 = same as above)
+    private final boolean instant;            // drain every step in one pulse, ignoring the speed slider
 
     private Step pending; // one-step lookahead so we can pace by the next step's type
     private long lastToggle;
@@ -37,6 +38,9 @@ public final class StepPlayer {
     public StepPlayer(Stepper stepper, Consumer<Step> renderer, long intervalNanos, long pathIntervalNanos) {
         this.stepper = stepper;
         this.renderer = renderer;
+        // A non-positive interval means "instant": lay down every step in the first pulse, regardless of
+        // the speed slider (matches the original basic-random maze, which placed all walls at once).
+        this.instant = intervalNanos <= 0L;
         this.intervalNanos = Math.max(1L, intervalNanos);
         this.pathIntervalNanos = pathIntervalNanos;
     }
@@ -60,6 +64,15 @@ public final class StepPlayer {
      * single step fires immediately (no blank first frame).
      */
     public int pulse(long now) {
+        if (instant) {
+            int applied = 0;
+            while (peek() != null) {
+                renderer.accept(take());
+                applied++;
+            }
+            return applied;
+        }
+
         Step next = peek();
         if (!started) {
             started = true;

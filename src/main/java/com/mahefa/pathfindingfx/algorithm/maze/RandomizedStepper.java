@@ -7,8 +7,9 @@ import com.mahefa.pathfindingfx.domain.Location;
 
 /**
  * The basic random maze as a pure {@link com.mahefa.pathfindingfx.algorithm.step.Stepper}: scans the
- * grid and, with ~25% probability, marks a (non-start/target) cell as a wall. Unlike the original
- * synchronous version it now streams one wall per pulled step, so it animates like the others.
+ * grid and, with ~25% probability, marks a (non-start/target) cell as a wall. It emits one wall per
+ * pulled step, but the service replays it instantly (all walls at once, independent of the speed
+ * slider) to match the original — see {@code GridService.generateMaze} / {@code StepWorker.runInstant}.
  */
 public class RandomizedStepper extends AbstractStepper {
 

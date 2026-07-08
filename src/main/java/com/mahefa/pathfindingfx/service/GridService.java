@@ -75,7 +75,14 @@ public class GridService {
             }
             default -> throw new UnsupportedAlgorithmException("Unsupported algorithm: " + algorithm);
         }
-        run(stepper, mazeNarrative(algorithm));
+
+        // Basic random drops all its walls at once, independent of the UI speed slider (like the
+        // original); Aldous-Broder is a genuine walk and stays paced by the slider.
+        if (algorithm == MazeAlgorithm.BASIC_RANDOM) {
+            stepWorker.runInstant(stepper, mazeNarrative(algorithm));
+        } else {
+            run(stepper, mazeNarrative(algorithm));
+        }
     }
 
     public void findPath() {

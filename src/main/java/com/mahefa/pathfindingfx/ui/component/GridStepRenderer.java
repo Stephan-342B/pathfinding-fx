@@ -3,6 +3,7 @@ package com.mahefa.pathfindingfx.ui.component;
 import com.mahefa.pathfindingfx.algorithm.step.Step;
 import com.mahefa.pathfindingfx.domain.Location;
 import com.mahefa.pathfindingfx.domain.enumerator.NodeType;
+import com.mahefa.pathfindingfx.ui.animation.NodeAnimations;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -54,21 +55,33 @@ public final class GridStepRenderer implements Consumer<Step> {
             arrow = new ImageView(new Image("/icons/triangletwo-up.png"));
         }
 
-        if (priorPathCell != null && priorPathCell.getNodeType() == NodeType.NONE
-                && !priorPathCell.getChildren().isEmpty()) {
-            priorPathCell.getChildren().remove(0);
+        // Remove the arrow from its previous cell by reference, not by index — the cell may hold other
+        // children, so removing index 0 could strand the arrow.
+        if (priorPathCell != null) {
+            priorPathCell.getChildren().remove(arrow);
         }
 
         arrow.setRotate(angle);
-        cell.setFlag(Flag.SHORTEST_PATH_NODE);
 
+        // Path cells colour yellow via CSS (no scaling, so the gridline stays put); the pop bounce rides
+        // on the arrow — or, at the special nodes, on their own icon — so it stays cohesive.
         if (cell.getNodeType() == NodeType.TARGET) {
+            // Arrow has arrived: the target joins the path (yellow) and the arrow merges into its icon.
+            // Until now it showed VISITED (turquoise) from when the search reached it.
+            cell.setFlag(Flag.SHORTEST_PATH_NODE);
             if (!cell.getChildren().isEmpty() && cell.getChildren().get(0) instanceof ImageView imageView) {
                 imageView.setImage(arrow.getImage());
                 imageView.setRotate(angle);
+                NodeAnimations.pathPop(imageView);
             }
         } else if (!cell.isSpecialNode()) {
+            cell.setFlag(Flag.SHORTEST_PATH_NODE);
             cell.getChildren().add(arrow);
+            NodeAnimations.pathPop(arrow);
+        } else if (!cell.getChildren().isEmpty() && cell.getChildren().get(0) instanceof ImageView imageView) {
+            // Start cell: keeps its own icon (and the "transparent" style); bounce it too.
+            cell.setFlag(Flag.SHORTEST_PATH_NODE);
+            NodeAnimations.pathPop(imageView);
         }
 
         priorPathCell = cell;
