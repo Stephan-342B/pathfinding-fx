@@ -49,15 +49,14 @@ public final class GridStepRenderer implements Consumer<Step> {
         Cell cell = grid.getCellAt(location.getRow(), location.getCol());
 
         if (arrowless) {
-            // Instant recompute: just colour the cell to its final state, no arrow. Leave the special
-            // start/target cells untouched so they keep their identity.
-            if (!cell.isSpecialNode()) {
-                switch (step.type()) {
-                    case CURRENT, VISITED -> cell.setFlag(Flag.VISITED);
-                    case OPEN -> cell.setFlag(Flag.NONE);
-                    case WALL -> cell.setFlag(Flag.WALL_NODE);
-                    case PATH -> cell.setFlag(Flag.SHORTEST_PATH_NODE);
-                }
+            // Instant recompute: colour cells straight to their final state, no arrow. Path cells —
+            // including the start/target endpoints — turn yellow so an endpoint is never left blank; the
+            // endpoints keep their icon on top. Visited/wall only apply to plain cells.
+            switch (step.type()) {
+                case PATH -> cell.setFlag(Flag.SHORTEST_PATH_NODE);
+                case CURRENT, VISITED -> { if (!cell.isSpecialNode()) cell.setFlag(Flag.VISITED); }
+                case OPEN -> { if (!cell.isSpecialNode()) cell.setFlag(Flag.NONE); }
+                case WALL -> { if (!cell.isSpecialNode()) cell.setFlag(Flag.WALL_NODE); }
             }
             return;
         }

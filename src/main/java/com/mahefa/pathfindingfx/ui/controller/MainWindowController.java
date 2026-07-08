@@ -54,6 +54,7 @@ public class MainWindowController {
     // the last previewed cell so we only recompute when the dragged node actually changes cell.
     private boolean suppressReveal = false;
     private Cell lastPreviewCell;
+    private Cell droppedNode;
 
     public ObjectProperty<AnimationSpeed> currentSpeed = new SimpleObjectProperty<>();
 
@@ -315,15 +316,20 @@ public class MainWindowController {
         newCell.getChildren().add(currentImageView);
 
         NodeAnimations.popIcon(currentImageView);
+
+        // Remember where the node landed so the drop finalize can play its reveal there.
+        droppedNode = newCell;
     }
 
     /**
      * Called when a start/target drag ends (drop). Repaints the path instantly for the final, committed
      * start/target positions — this also corrects the last live preview if the drop was invalid (dropped
-     * on another node) and the node snapped back.
+     * on another node) and the node snapped back. The dropped endpoint then plays its reveal.
      */
     private void finalizePathAfterDrag() {
         lastPreviewCell = null;
+        Cell dropped = droppedNode;
+        droppedNode = null;
         if (gridService == null || !gridService.isPathDisplayed()) {
             return;
         }
@@ -333,6 +339,10 @@ public class MainWindowController {
             gridService.recomputeInstant(grid.getStartCell().getLocation(), grid.getTargetCell().getLocation());
         } finally {
             suppressReveal = false;
+        }
+        // The dropped endpoint reveals from a rounded square to a full yellow square (matches the original).
+        if (dropped != null && dropped.getFlag() == Flag.SHORTEST_PATH_NODE) {
+            NodeAnimations.pathReveal(dropped);
         }
     }
 

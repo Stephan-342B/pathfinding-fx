@@ -40,6 +40,7 @@ public final class NodeAnimations {
     private static final String RUNNING_KEY = "pfx.runningReveal";
 
     private static final Color VISITED_END = Color.rgb(0, 190, 218, 0.75);   // -visited-color
+    private static final Color PATH_COLOR = Color.rgb(255, 254, 106);        // -shortest-path-color
 
     private NodeAnimations() {
     }
@@ -122,6 +123,30 @@ public final class NodeAnimations {
         );
         // Reveal done: drop "revealing" so the CSS :visited cyan shows (the tile is removed by play()).
         timeline.setOnFinished(e -> cell.getStyleClass().remove(REVEALING_CLASS));
+        play(cell, tile, timeline);
+    }
+
+    /**
+     * Shortest-path endpoint reveal, played when a dragged start/target is dropped: a tile grows from a
+     * rounded square to a full yellow square (scale pulse + corner morph). The cell's persistent yellow
+     * comes from CSS {@code :shortest-path}; the tile is removed on finish.
+     */
+    public static void pathReveal(Pane cell) {
+        Region tile = overlayTile(cell);
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.ZERO,
+                        new KeyValue(tile.scaleXProperty(), 0.3, Interpolator.EASE_OUT),
+                        new KeyValue(tile.scaleYProperty(), 0.3, Interpolator.EASE_OUT),
+                        new KeyValue(tile.backgroundProperty(), fill(PATH_COLOR, 100), Interpolator.EASE_OUT)),
+                new KeyFrame(Duration.seconds(0.75),
+                        new KeyValue(tile.scaleXProperty(), 1.2, Interpolator.EASE_OUT),
+                        new KeyValue(tile.scaleYProperty(), 1.2, Interpolator.EASE_OUT),
+                        new KeyValue(tile.backgroundProperty(), fill(PATH_COLOR, 0), Interpolator.EASE_OUT)),
+                new KeyFrame(Duration.seconds(1.5),
+                        new KeyValue(tile.scaleXProperty(), 1.0, Interpolator.EASE_OUT),
+                        new KeyValue(tile.scaleYProperty(), 1.0, Interpolator.EASE_OUT),
+                        new KeyValue(tile.backgroundProperty(), fill(PATH_COLOR, 0), Interpolator.EASE_OUT))
+        );
         play(cell, tile, timeline);
     }
 
