@@ -50,6 +50,11 @@ public class MainWindowController {
     private Button btnPlay;
     public GridService gridService;
 
+    // Live-drag path recompute: suppress the reveal animations during an instant repaint, and remember
+    // the last previewed cell so we only recompute when the dragged node actually changes cell.
+    private boolean suppressReveal = false;
+    private Cell lastPreviewCell;
+
     public ObjectProperty<AnimationSpeed> currentSpeed = new SimpleObjectProperty<>();
 
     @FXML
@@ -230,7 +235,7 @@ public class MainWindowController {
     }
 
     private void addCellEvent(Cell cell) {
-        CellEventHandler cellEventHandler = new CellEventHandler();
+        CellEventHandler cellEventHandler = new CellEventHandler(this::previewPathDuringDrag, this::finalizePathAfterDrag);
 
 //        cell.setOnMouseClicked(cellEventHandler::handle);
         cell.setOnMousePressed(cellEventHandler::handle);
@@ -256,11 +261,42 @@ public class MainWindowController {
         cell.flagProperty().addListener((observable, oldValue, newValue) -> {
             switch (newValue) {
                 case WALL_NODE -> NodeAnimations.pop(cell);
-                case VISITED -> NodeAnimations.visited(cell);
+                // During a live drag recompute we skip the 1.5s pulse and fill the visited cell instantly.
+                case VISITED -> { if (suppressReveal) NodeAnimations.visitedInstant(cell); else NodeAnimations.visited(cell); }
                 case SHORTEST_PATH_NODE -> NodeAnimations.shortestPath(cell);
                 default -> NodeAnimations.reset(cell);
             }
         });
+    }
+
+    /**
+     * Live path preview while dragging a start/target node (matches the original): recompute and repaint
+     * the visited cells + shortest path instantly as the cursor moves, without the reveal animations.
+     * Only active once a path has been run ({@code pathDisplayed}); throttled to actual cell changes.
+     */
+    private void previewPathDuringDrag(NodeType draggedType, Cell hovered) {
+        if (gridService == null || !gridService.isPathDisplayed() || hovered == lastPreviewCell) {
+            return;
+        }
+        if (hovered.isSpecialNode() || hovered.getFlag() == Flag.WALL_NODE) {
+            return;
+        }
+        lastPreviewCell = hovered;
+        recomputeInstant(draggedType, hovered.getLocation());
+    }
+
+    // Recompute with the dragged endpoint at `dragged` (the other endpoint stays where the grid has it),
+    // suppressing the reveal animations so the repaint is instant.
+    private void recomputeInstant(NodeType draggedType, Location dragged) {
+        Grid grid = gridService.getGrid();
+        Location start = (draggedType == NodeType.START) ? dragged : grid.getStartCell().getLocation();
+        Location target = (draggedType == NodeType.TARGET) ? dragged : grid.getTargetCell().getLocation();
+        suppressReveal = true;
+        try {
+            gridService.recomputeInstant(start, target);
+        } finally {
+            suppressReveal = false;
+        }
     }
 
     private void switchNodeType(Cell newCell, Cell currentCell) {
@@ -279,6 +315,25 @@ public class MainWindowController {
         newCell.getChildren().add(currentImageView);
 
         NodeAnimations.popIcon(currentImageView);
+    }
+
+    /**
+     * Called when a start/target drag ends (drop). Repaints the path instantly for the final, committed
+     * start/target positions — this also corrects the last live preview if the drop was invalid (dropped
+     * on another node) and the node snapped back.
+     */
+    private void finalizePathAfterDrag() {
+        lastPreviewCell = null;
+        if (gridService == null || !gridService.isPathDisplayed()) {
+            return;
+        }
+        Grid grid = gridService.getGrid();
+        suppressReveal = true;
+        try {
+            gridService.recomputeInstant(grid.getStartCell().getLocation(), grid.getTargetCell().getLocation());
+        } finally {
+            suppressReveal = false;
+        }
     }
 
     private void updateSpeed(Menu parent, MenuItem currentMenuItem) {

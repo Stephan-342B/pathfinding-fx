@@ -16,6 +16,7 @@ import com.mahefa.pathfindingfx.domain.enumerator.MazeAlgorithm;
 import com.mahefa.pathfindingfx.domain.enumerator.MazeGenerationAnimationSpeed;
 import com.mahefa.pathfindingfx.domain.enumerator.PathFindingAlgorithm;
 import com.mahefa.pathfindingfx.ui.component.Grid;
+import com.mahefa.pathfindingfx.ui.component.GridStepRenderer;
 import com.mahefa.pathfindingfx.service.concurrent.GridSnapshot;
 import com.mahefa.pathfindingfx.service.concurrent.RunNarrative;
 import com.mahefa.pathfindingfx.service.concurrent.StepWorker;
@@ -41,6 +42,9 @@ public class GridService {
     private boolean lastRunWasMaze;
 
     private BooleanProperty isReady = new SimpleBooleanProperty(false);
+    // True once a pathfinding run has finished and its result is on the grid (the original's "algoDone").
+    // Gates the instant recompute while dragging start/target — no point recomputing if nothing ran yet.
+    private final BooleanProperty pathDisplayed = new SimpleBooleanProperty(false);
 
     public GridService(Grid grid, LogCleaner logCleaner) {
         this.grid = grid;
@@ -61,6 +65,7 @@ public class GridService {
 
     public void generateMaze(MazeAlgorithm algorithm) {
         lastRunWasMaze = true;
+        pathDisplayed.set(false);
         Stepper stepper;
         switch (algorithm) {
             case ALDOUS_BRODER -> {
@@ -91,6 +96,7 @@ public class GridService {
         }
 
         lastRunWasMaze = false;
+        pathDisplayed.set(false);
         switch (pathAlgorithm) {
             case A_STAR -> {
                 grid.clear(false, false, false);
@@ -100,6 +106,39 @@ public class GridService {
                         LaunchAnimationSpeed.SHORTEST_PATH.getInterval());
             }
             default -> throw new UnsupportedAlgorithmException("Unsupported algorithm: " + pathAlgorithm);
+        }
+
+        // Mark the result "displayed" once this run finishes (one-shot), so dragging start/target after
+        // it can recompute instantly.
+        isReady.addListener(new javafx.beans.value.ChangeListener<>() {
+            @Override
+            public void changed(javafx.beans.value.ObservableValue<? extends Boolean> obs, Boolean was, Boolean done) {
+                if (done) {
+                    pathDisplayed.set(true);
+                    isReady.removeListener(this);
+                }
+            }
+        });
+    }
+
+    public boolean isPathDisplayed() {
+        return pathDisplayed.get();
+    }
+
+    /**
+     * Re-runs the pathfinder with the given start/target and paints the result instantly — no step
+     * animation, no travelling arrow. Used while dragging a start/target node so the visited cells and
+     * shortest path follow the cursor live (matching the original). No-op until a path has been run.
+     */
+    public void recomputeInstant(Location start, Location target) {
+        if (!pathDisplayed.get() || !isReady() || pathAlgorithm != PathFindingAlgorithm.A_STAR) {
+            return;
+        }
+        grid.clear(false, false, false);   // clear previous visited/path, keep walls/start/target
+        GridStepRenderer renderer = new GridStepRenderer(grid, true);
+        Stepper stepper = new AStarStepper(GridSnapshot.of(grid, start, target));
+        while (stepper.hasNext()) {
+            renderer.accept(stepper.next());
         }
     }
 
@@ -194,6 +233,7 @@ public class GridService {
 
     private void clear(boolean reset, boolean removeWalls) {
         cancelRunningWorkers();
+        pathDisplayed.set(false);
 
         if (grid != null) {
             grid.setDefaultFlag(NONE);

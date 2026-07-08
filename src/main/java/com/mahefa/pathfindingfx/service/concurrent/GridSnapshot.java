@@ -1,6 +1,7 @@
 package com.mahefa.pathfindingfx.service.concurrent;
 
 import com.mahefa.pathfindingfx.algorithm.grid.GridModel;
+import com.mahefa.pathfindingfx.domain.Location;
 import com.mahefa.pathfindingfx.ui.component.Cell;
 import com.mahefa.pathfindingfx.ui.component.Grid;
 
@@ -16,6 +17,14 @@ public final class GridSnapshot {
     }
 
     public static GridModel of(Grid grid) {
+        return of(grid, grid.getStartCell().getLocation(), grid.getTargetCell().getLocation());
+    }
+
+    /**
+     * Snapshot with explicit start/target locations — used to preview the path while a start/target node
+     * is being dragged, before the move is committed to the grid.
+     */
+    public static GridModel of(Grid grid, Location start, Location target) {
         int rows = grid.getRowLen();
         int cols = grid.getColLen();
         boolean[][] wall = new boolean[rows][cols];
@@ -29,7 +38,6 @@ public final class GridSnapshot {
             }
         }
 
-        return new GridModel(rows, cols, wall, weight,
-                grid.getStartCell().getLocation(), grid.getTargetCell().getLocation());
+        return new GridModel(rows, cols, wall, weight, start, target);
     }
 }

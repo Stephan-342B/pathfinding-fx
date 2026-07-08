@@ -119,6 +119,17 @@ public final class NodeAnimations {
     }
 
     /**
+     * Visited end-state with no reveal: fills the cell cyan immediately. Used for the instant recompute
+     * while dragging start/target, where the 1.5s pulse would be unusable.
+     */
+    public static void visitedInstant(Region cell) {
+        stopRunning(cell);
+        cell.setScaleX(1);
+        cell.setScaleY(1);
+        cell.setBackground(fill(VISITED_END, 0));
+    }
+
+    /**
      * Shortest-path cell: colours to yellow via CSS ({@code .cell:shortest-path}). The pop lives on the
      * arrow ({@link #pathPop}), not the cell, so the cell — and its gridline border — never scales.
      * This just stops any running visited reveal and drops its inline fill/scale so the CSS shows through.
